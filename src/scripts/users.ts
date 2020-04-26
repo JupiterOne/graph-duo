@@ -1,4 +1,4 @@
-import ServicesClient from './ServicesClient';
+import ServicesClient from '../collector/ServicesClient';
 
 const [, , apiHostname, secretKey, integrationKey] = process.argv;
 
