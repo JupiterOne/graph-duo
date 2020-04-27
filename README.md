@@ -2,4 +2,4 @@ This integration requires a Duo account with Admin API access. Follow the instru
 
 Once you've obtained Admin API access and have located your API hostname, integration key, and secret key, you can test the `/users` endpoint using the following command:
 
-`ts-node src/collector/index.ts <API hostname> <secret key> <integration key>`
+`ts-node src/scripts/users.ts <API hostname> <secret key> <integration key>`
