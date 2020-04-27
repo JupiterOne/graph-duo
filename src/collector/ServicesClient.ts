@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import { Response, User } from '../types';
 
 const moment = require('moment');
 const base64 = require('base-64');
@@ -19,7 +20,7 @@ export default class ServicesClient {
     this.config = config;
   }
 
-  async fetch<T = any>(url: string): Promise<T> {
+  private async fetch<T = any>(url: string): Promise<T> {
     const { apiHostname, integrationKey, secretKey } = this.config;
 
     const date = moment.utc().format(DATE_RFC2822).replace('+', '-');
@@ -44,5 +45,9 @@ export default class ServicesClient {
     });
 
     return response.json();
+  }
+
+  async fetchUsers(): Promise<Response<User[]>> {
+    return this.fetch<Response<User[]>>('/users');
   }
 }

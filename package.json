@@ -1,4 +1,12 @@
 {
+  "name": "@jupiterone/graph-duo",
+  "version": "0.0.1",
+  "description": "A graph conversion tool for https://duo.com",
+  "license": "MPL-2.0",
+  "scripts": {
+    "test": "jest --passWithNoTests",
+    "test:ci": "yarn lint && yarn type-check && yarn test"
+  },
   "dependencies": {
     "base-64": "^0.1.0",
     "crypto": "^1.0.1",
@@ -7,7 +15,9 @@
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
+    "@types/jest": "^25.2.1",
     "@types/node": "^13.13.2",
+    "dotenv": "^8.2.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-jest": "^23.8.2",
@@ -19,6 +29,7 @@
     "prettier": "^2.0.5",
     "ts-jest": "^25.4.0",
     "ts-node": "^8.9.1",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "wait-for-expect": "^3.0.2"
   }
 }
