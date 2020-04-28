@@ -1,5 +1,11 @@
 import fetch from 'node-fetch';
-import { Response, User } from '../types';
+import {
+  Response,
+  DuoUser,
+  DuoAccountSettings,
+  DuoAdmin,
+  DuoGroup,
+} from '../types';
 
 const moment = require('moment');
 const base64 = require('base-64');
@@ -25,7 +31,7 @@ export default class ServicesClient {
 
     const date = moment.utc().format(DATE_RFC2822).replace('+', '-');
     const method = 'GET';
-    const host = apiHostname.toLowerCase();
+    const host = apiHostname.toLowerCase().replace(/^https?:\/\//, '');
     const path = `/admin/v1/${url}`;
     const params = '';
 
@@ -47,7 +53,19 @@ export default class ServicesClient {
     return response.json();
   }
 
-  async fetchUsers(): Promise<Response<User[]>> {
-    return this.fetch<Response<User[]>>('users');
+  async fetchAccountSettings(): Promise<Response<DuoAccountSettings>> {
+    return this.fetch<Response<DuoAccountSettings>>('settings');
+  }
+
+  async fetchGroups(): Promise<Response<DuoGroup[]>> {
+    return this.fetch<Response<DuoGroup[]>>('groups');
+  }
+
+  async fetchUsers(): Promise<Response<DuoUser[]>> {
+    return this.fetch<Response<DuoUser[]>>('users');
+  }
+
+  async fetchAdmins(): Promise<Response<DuoAdmin[]>> {
+    return this.fetch<Response<DuoAdmin[]>>('admins');
   }
 }
