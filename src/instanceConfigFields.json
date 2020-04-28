@@ -1,0 +1,14 @@
+{
+  "apiHostname": {
+    "type": "string",
+    "mask": false
+  },
+  "integrationKey": {
+    "type": "string",
+    "mask": false
+  },
+  "secretKey": {
+    "type": "string",
+    "mask": true
+  }
+}

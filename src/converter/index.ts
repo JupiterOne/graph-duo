@@ -6,7 +6,7 @@ import {
   DuoAccountSettings,
   DuoGroup,
   DuoAdmin,
-} from '../types';
+} from '../collector/types';
 import {
   createIntegrationEntity,
   getTime,
