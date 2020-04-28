@@ -44,9 +44,9 @@ const step: IntegrationStep = {
     }
 
     const match = apiHostname.match(/api-(\w+)\.duosecurity\.com/i);
-    const accountId = match && match[1];
+    const siteId = match && match[1];
 
-    if (!accountId) {
+    if (!siteId) {
       throw new Error(
         'Invalid "apiHostname". "apiHostname" should be in this format: "https://api-XXXXXXXX.duosecurity.com"',
       );
@@ -63,7 +63,7 @@ const step: IntegrationStep = {
     const { response: groups } = await client.fetchGroups();
     const { response: users } = await client.fetchUsers();
 
-    const accountEntity = convertAccount(accountId, settings);
+    const accountEntity = convertAccount(siteId, settings);
     const adminEntities = [];
     const groupEntities = groups.map(convertGroup);
     const userEntities = [];

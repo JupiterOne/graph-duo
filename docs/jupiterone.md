@@ -22,6 +22,8 @@ The following entity resources are ingested when the integration runs:
 | Resources | \_type of the Entity | \_class of the Entity |
 | --------- | -------------------- | --------------------- |
 | Account   | `duo_account`        | `Account`             |
+| Admin     | `duo_admin`          | `User`                |
+| Group     | `duo_group`          | `UserGroup`           |
 | User      | `duo_user`           | `User`                |
 | MFA Token | `mfa_device`         | `AccessKey`           |
 
@@ -29,8 +31,12 @@ The following entity resources are ingested when the integration runs:
 
 The following relationships are created/mapped:
 
-| From       | Relationship | To           |
-| ---------- | ------------ | ------------ |
-| `duo_user` | **ASSIGNED** | `mfa_device` |
+| From          | Relationship | To           |
+| ------------- | ------------ | ------------ |
+| `duo_account` | **HAS**      | `duo_group`  |
+| `duo_account` | **HAS**      | `duo_admin`  |
+| `duo_account` | **HAS**      | `duo_user`   |
+| `duo_group`   | **HAS**      | `duo_user`   |
+| `duo_user`    | **ASSIGNED** | `mfa_device` |
 
 [1]: https://duo.com/docs/adminapi
