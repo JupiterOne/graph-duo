@@ -31,7 +31,6 @@ export default class DuoClient {
     const { apiHostname, integrationKey, secretKey } = this.config;
 
     const date = moment.utc().format(DATE_RFC2822).replace('+', '-');
-    console.log({ date });
     const path = `/admin/v1/${url}`;
 
     const authHeader = this.buildAuthHeader({
