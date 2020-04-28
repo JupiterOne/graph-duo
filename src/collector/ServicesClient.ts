@@ -26,7 +26,7 @@ export default class ServicesClient {
     const date = moment.utc().format(DATE_RFC2822).replace('+', '-');
     const method = 'GET';
     const host = apiHostname.toLowerCase();
-    const path = `/admin/v1${url}`;
+    const path = `/admin/v1/${url}`;
     const params = '';
 
     const lines = [date, method, host, path, params].join('\n');
@@ -48,6 +48,6 @@ export default class ServicesClient {
   }
 
   async fetchUsers(): Promise<Response<User[]>> {
-    return this.fetch<Response<User[]>>('/users');
+    return this.fetch<Response<User[]>>('users');
   }
 }

@@ -9,13 +9,31 @@ export interface Response<T> {
   message_detail?: string | null;
 }
 
+export interface Token {
+  serial: string;
+  token_id: string;
+  type: string;
+}
+
+export interface U2fToken {
+  date_added: string;
+  registration_id: string;
+}
+
+export interface WebAuthnCredential {
+  credential_name: string;
+  date_added: number;
+  label: string;
+  webauthnkey: string;
+}
+
 export interface User {
   alias1: string | null;
   alias2: string | null;
   alias3: string | null;
   alias4: string | null;
   created: number;
-  desktoptokens: any[];
+  desktoptokens?: any[];
   email: string | null;
   firstname: string | null;
   groups: any[];
@@ -27,9 +45,9 @@ export interface User {
   phones: any[];
   realname: string | null;
   status: string;
-  tokens: any[];
-  u2ftokens: any[];
+  tokens?: Token[];
+  u2ftokens?: U2fToken[];
   user_id: string;
   username: string;
-  webauthncredentials: any[];
+  webauthncredentials: WebAuthnCredential[];
 }
