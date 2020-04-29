@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import buildAuthHeader from './buildAuthHeader';
 import {
   Response,
   DuoUser,
@@ -9,8 +10,6 @@ import {
 } from './types';
 
 const moment = require('moment');
-const base64 = require('base-64');
-const crypto = require('crypto');
 
 const DATE_RFC2822 = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 
@@ -33,7 +32,7 @@ export default class DuoClient {
     const date = moment.utc().format(DATE_RFC2822).replace('+', '-');
     const path = `/admin/v1/${url}`;
 
-    const authHeader = this.buildAuthHeader({
+    const authHeader = buildAuthHeader({
       date,
       method: 'GET',
       host: this.hostname,
@@ -51,22 +50,6 @@ export default class DuoClient {
     });
 
     return response.json();
-  }
-
-  buildAuthHeader({
-    date,
-    method,
-    host,
-    path,
-    params,
-    integrationKey,
-    secretKey,
-  }) {
-    const lines = [date, method, host, path, params].join('\n');
-    const h = crypto.createHmac('sha1', secretKey);
-    h.update(lines);
-    const signature = h.digest('hex');
-    return base64.encode(`${integrationKey}:${signature}`);
   }
 
   async fetchAccountSettings(): Promise<Response<DuoAccountSettings>> {
