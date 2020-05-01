@@ -6,7 +6,7 @@ import {
   DuoAccountSettings,
   DuoGroup,
   DuoAdmin,
-} from '../types';
+} from '../collector/types';
 import {
   createIntegrationEntity,
   getTime,
@@ -58,7 +58,7 @@ export function convertUser(
         status: user.status,
         email: user.email,
         mfaEnabled: user.is_enrolled,
-        notes: user.notes,
+        notes: typeof user.notes === 'string' ? [user.notes] : user.notes,
       },
     },
   });
@@ -97,6 +97,7 @@ export function convertAdmin(
         id: admin.admin_id,
         active: admin.status.toLowerCase() === 'active',
         admin: true,
+        status: admin.status.toLowerCase(),
         username: admin.email,
       },
     },
@@ -114,6 +115,7 @@ export function convertToken(
         _type: 'mfa_device',
         _class: 'AccessKey',
         id: token.token_id,
+        name: token.token_id,
         displayName: token.token_id,
         serial: token.serial,
         type: token.type,
@@ -134,6 +136,7 @@ export function convertU2fToken(
         _type: 'mfa_device',
         _class: 'AccessKey',
         id: token.registration_id,
+        name: token.registration_id,
         displayName: token.registration_id,
         createdOn: getTime(token.date_added),
         factorType: 'u2f',

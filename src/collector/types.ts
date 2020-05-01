@@ -1,3 +1,9 @@
+export interface DuoClientConfiguration {
+  apiHostname: string;
+  integrationKey: string;
+  secretKey: string;
+}
+
 export interface Response<T> {
   metadata: {
     [key: string]: string;
