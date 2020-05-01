@@ -12,39 +12,24 @@ test('should fetch users in account', async () => {
   recording = setupRecording({
     name: 'users',
     directory: __dirname,
-    redactedRequestHeaders: ['secret-key'],
-    options: {
-      recordFailedRequests: false,
-      matchRequestsBy: {
-        url: {
-          query: false,
-        },
-      },
-    },
   });
 
   const context = createStepContext();
   await fetchTeams.executionHandler(context);
   const entities = context.jobState.collectedEntities;
 
-  console.log(JSON.stringify(entities, null, 2));
   expect(entities).toHaveLength(4);
   expect(entities).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
-        email: 'byricketts98@gmail.com',
-        notes: [''],
+        email: 'bruce@jupiterone.io',
         status: 'active',
-        username: 'bruce',
-        _key: 'duo-user:DUHBVLNGTNJFT6W6O5F0',
-        _type: 'duo_user',
+        username: 'bruce@jupiterone.io',
+        _type: 'duo_admin',
         _class: ['User'],
-        id: 'DUHBVLNGTNJFT6W6O5F0',
-        name: 'Bruce Ricketts',
-        displayName: 'Bruce Ricketts',
-        createdOn: 1587672033,
+        name: 'Bruce',
+        displayName: 'Bruce',
         active: true,
-        mfaEnabled: true,
       }),
       expect.objectContaining({
         _key: 'mfa-device:DH9K9HUHLNXCP2E4Z0O9',

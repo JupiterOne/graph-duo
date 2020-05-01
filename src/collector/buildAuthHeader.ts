@@ -1,5 +1,5 @@
-const base64 = require('base-64');
-const crypto = require('crypto');
+import base64 from 'base-64';
+import crypto from 'crypto';
 
 interface BuildAuthHeaderOptions {
   date: string;
@@ -19,7 +19,7 @@ export default function buildAuthHeader({
   params,
   integrationKey,
   secretKey,
-}: BuildAuthHeaderOptions) {
+}: BuildAuthHeaderOptions): string {
   const lines = [date, method, host, path, params].join('\n');
   const h = crypto.createHmac('sha1', secretKey);
   h.update(lines);

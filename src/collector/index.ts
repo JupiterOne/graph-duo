@@ -1,4 +1,3 @@
-import { IntegrationInstance } from '@jupiterone/integration-sdk';
 import DuoClient from './DuoClient';
 import { DuoClientConfiguration } from './types';
 

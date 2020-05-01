@@ -9,6 +9,7 @@ import {
   DuoClientConfiguration,
 } from './types';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const moment = require('moment');
 
 const DATE_RFC2822 = 'ddd, DD MMM YYYY HH:mm:ss ZZ';

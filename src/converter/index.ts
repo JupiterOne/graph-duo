@@ -97,6 +97,7 @@ export function convertAdmin(
         id: admin.admin_id,
         active: admin.status.toLowerCase() === 'active',
         admin: true,
+        status: admin.status.toLowerCase(),
         username: admin.email,
       },
     },
