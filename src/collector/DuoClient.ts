@@ -27,7 +27,7 @@ export default class DuoClient {
   }
 
   private async fetch<T = any>(url: string): Promise<T> {
-    const { apiHostname, integrationKey, secretKey } = this.config;
+    const { integrationKey, secretKey } = this.config;
 
     const date = moment.utc().format(DATE_RFC2822).replace('+', '-');
     const path = `/admin/v1/${url}`;
@@ -42,7 +42,7 @@ export default class DuoClient {
       secretKey,
     });
 
-    const response = await fetch(`https://${apiHostname}${path}`, {
+    const response = await fetch(`https://${this.hostname}${path}`, {
       headers: new fetch.Headers({
         Authorization: `Basic ${authHeader}`,
         Date: date,

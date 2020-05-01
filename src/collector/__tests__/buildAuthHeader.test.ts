@@ -13,6 +13,6 @@ test('applies the appropriate headers', () => {
       secretKey: testConfig.secretKey,
     }),
   ).toEqual(
-    'RElXSjhYNkFFWU9SNU9NQzZUUTE6MmQ5N2Q2MTY2MzE5NzgxYjVhM2EwN2FmMzlkMzY2ZjQ5MTIzNGVkYw==',
+    'RElXSjhYNkFFWU9SNU9NQzZUUTE6YzFlZjQzNzY3YzNlYjNiMzI1OGRiZGRjYTZmOGQwOTQxZTA4NWI5Mg==',
   );
 });
