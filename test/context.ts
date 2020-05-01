@@ -5,9 +5,10 @@ export function createStepContext(): ReturnType<
 > {
   return createMockStepExecutionContext({
     instanceConfig: {
-      apiHostname: process.env.API_HOSTNAME,
-      integrationKey: process.env.INTEGRATION_KEY,
-      secretKey: process.env.SECRET_KEY,
+      apiHostname: 'https://api-56cd46b9.duosecurity.com',
+      integrationKey: 'test',
+      secretKey: 'test',
+      siteId: 'test',
     },
   });
 }
