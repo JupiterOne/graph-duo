@@ -11,7 +11,8 @@
     "baseUrl": ".",
     "paths": {
       "test": ["test"]
-    }
+    },
+    "skipLibCheck": true
   },
   "exclude": ["dist"]
 }
