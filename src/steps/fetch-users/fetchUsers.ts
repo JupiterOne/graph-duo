@@ -14,7 +14,7 @@ import {
 } from '../../converter';
 import { createDuoClient } from '../../collector';
 
-const step: IntegrationStep = {
+const fetchUsers: IntegrationStep = {
   id: 'fetch-users',
   name: 'Fetch Users',
   types: ['duo-user'],
@@ -131,4 +131,4 @@ const step: IntegrationStep = {
   },
 };
 
-export default step;
+export default fetchUsers;
