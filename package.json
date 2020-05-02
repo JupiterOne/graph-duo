@@ -1,6 +1,6 @@
 {
   "name": "@jupiterone/graph-duo",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A graph conversion tool for https://duo.com",
   "license": "MPL-2.0",
   "files": [
@@ -11,6 +11,7 @@
   },
   "scripts": {
     "start": "j1-integration collect",
+    "graph": "j1-integration visualize",
     "lint": "eslint . --cache --fix --ext .ts,.tsx",
     "format": "prettier --write '**/*.{ts,js,json,css,md,yml}'",
     "type-check": "tsc --noEmit",
