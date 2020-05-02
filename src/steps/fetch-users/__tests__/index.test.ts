@@ -1,6 +1,6 @@
 import { createStepContext } from 'test';
 import { Recording, setupRecording } from '@jupiterone/integration-sdk/testing';
-import fetchUsers from '../fetchUsers';
+import step from '..';
 
 let recording: Recording;
 
@@ -15,7 +15,7 @@ test('should fetch users in account', async () => {
   });
 
   const context = createStepContext();
-  await fetchUsers.executionHandler(context);
+  await step.executionHandler(context);
   const entities = context.jobState.collectedEntities;
 
   expect(entities).toHaveLength(4);
