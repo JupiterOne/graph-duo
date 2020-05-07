@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 1.0.1 - 2020-05-07
+
 ### Fixed
 
 - Added all generated `_type` values to the single step of the integration.
