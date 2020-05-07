@@ -17,7 +17,18 @@ import { createDuoClient } from '../../collector';
 const step: IntegrationStep = {
   id: 'fetch-users',
   name: 'Fetch Users',
-  types: ['duo-user'],
+  types: [
+    'duo_account',
+    'duo_admin',
+    'duo_user',
+    'duo_group',
+    'mfa_device',
+    'duo_account_has_group',
+    'duo_account_has_admin',
+    'duo_account_has_user',
+    'duo_group_has_user',
+    'duo_user_assigned_device',
+  ],
   async executionHandler({
     instance,
     jobState,
