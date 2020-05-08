@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 1.0.2 - 2020-05-07
+
 ### Added
 
 - `curl-duo-api.sh` script to test credentials.
