@@ -2,8 +2,6 @@
 
 set -o allexport; source .env; set +o allexport
 
-echo "$SECRET_KEY"
-
 method="GET"
 path="/admin/v1/settings"
 params=""
