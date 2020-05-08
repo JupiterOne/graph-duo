@@ -8,6 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- `curl-duo-api.sh` script to test credentials.
+- Non-OK API responses will be raised as errors.
+
 ## 1.0.1 - 2020-05-07
 
 ### Fixed
