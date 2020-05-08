@@ -1,12 +1,15 @@
 import fetch from 'node-fetch';
+
+import { IntegrationError } from '@jupiterone/integration-sdk/src/errors';
+
 import buildAuthHeader from './buildAuthHeader';
 import {
-  Response,
-  DuoUser,
   DuoAccountSettings,
   DuoAdmin,
-  DuoGroup,
   DuoClientConfiguration,
+  DuoGroup,
+  DuoUser,
+  Response,
 } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -27,7 +30,7 @@ export default class DuoClient {
       .replace(/^https?:\/\//, '');
   }
 
-  private async fetch<T = any>(url: string): Promise<T> {
+  private async fetch<T>(url: string): Promise<T> {
     const { integrationKey, secretKey } = this.config;
 
     const date = moment.utc().format(DATE_RFC2822).replace('+', '-');
@@ -44,13 +47,20 @@ export default class DuoClient {
     });
 
     const response = await fetch(`https://${this.hostname}${path}`, {
-      headers: new fetch.Headers({
+      headers: {
         Authorization: `Basic ${authHeader}`,
         Date: date,
-      }),
+      },
     });
 
-    return response.json();
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new IntegrationError({
+        code: String(response.status),
+        message: response.statusText,
+      });
+    }
   }
 
   async fetchAccountSettings(): Promise<Response<DuoAccountSettings>> {

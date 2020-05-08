@@ -4,26 +4,16 @@ import { DuoClientConfiguration } from './types';
 export * from './types';
 
 /**
- * Creates a DuoClient.
+ * Creates a `DuoClient`.
+ *
+ * @throws error when configuration is missing any required property.
  */
 export function createDuoClient(config: DuoClientConfiguration): DuoClient {
   const { apiHostname, integrationKey, secretKey } = config || {};
 
-  if (!apiHostname) {
+  if (!apiHostname || !integrationKey || !secretKey) {
     throw new Error(
-      'Configuration option "apiHostname" is missing on the integration instance config',
-    );
-  }
-
-  if (!integrationKey) {
-    throw new Error(
-      'Configuration option "integrationKey" is missing on the integration instance config',
-    );
-  }
-
-  if (!secretKey) {
-    throw new Error(
-      'Configuration option "secretKey" is missing on the integration instance config',
+      'Configuration requires all of { apiHostname, integrationKey, secretKey }',
     );
   }
 
