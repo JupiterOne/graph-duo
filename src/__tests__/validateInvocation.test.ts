@@ -1,3 +1,5 @@
+import { createStepContext } from 'test';
+
 import {
   createMockExecutionContext,
   Recording,
@@ -32,7 +34,7 @@ describe('validateInvocation API access', () => {
       },
     });
 
-    const context = createMockExecutionContext();
+    const context = createStepContext();
     context.instance.config.secretKey = 'testingUnauthorized';
 
     await expect(validateInvocation(context)).rejects.toThrow(
@@ -46,7 +48,7 @@ describe('validateInvocation API access', () => {
       name: 'validateInvocation',
     });
 
-    const context = createMockExecutionContext();
+    const context = createStepContext();
     await expect(validateInvocation(context)).resolves.toBe(undefined);
   });
 });

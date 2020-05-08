@@ -3,12 +3,7 @@ import { createMockStepExecutionContext } from '@jupiterone/integration-sdk/test
 export function createStepContext(): ReturnType<
   typeof createMockStepExecutionContext
 > {
-  return createMockStepExecutionContext({
-    instanceConfig: {
-      apiHostname: 'https://api-56cd46b9.duosecurity.com',
-      integrationKey: 'test',
-      secretKey: 'test',
-      siteId: 'test',
-    },
-  });
+  const context = createMockStepExecutionContext();
+  context.instance.config.apiHostname = 'https://api-56cd46b9.duosecurity.com';
+  return context;
 }

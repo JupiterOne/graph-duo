@@ -1,9 +1,7 @@
+import { createStepContext } from 'test';
+
 /* eslint-disable @typescript-eslint/camelcase */
-import {
-  createMockStepExecutionContext,
-  Recording,
-  setupRecording,
-} from '@jupiterone/integration-sdk/testing';
+import { Recording, setupRecording } from '@jupiterone/integration-sdk/testing';
 
 import { createDuoClient } from '../';
 
@@ -22,7 +20,7 @@ describe('fetchUsers', () => {
   });
 
   test('okay', async () => {
-    const context = createMockStepExecutionContext();
+    const context = createStepContext();
     const provider = createDuoClient(context.instance.config);
 
     const response = await provider.fetchUsers();
