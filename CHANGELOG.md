@@ -8,11 +8,20 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 1.0.4 - 2020-05-11
+
+### Fixed
+
+- Upgrade `@jupiterone/integration-sdk` to turn off runtime graph object
+  validation. The `AccessKey` data does not always provide for a `name`
+  property.
+
 ## 1.0.3 - 2020-05-11
 
 ### Changed
 
-- Added tests for auth digest.
+- Added tests for auth digest, remove modification of time string to fix
+  authorization.
 
 ## 1.0.2 - 2020-05-07
 
