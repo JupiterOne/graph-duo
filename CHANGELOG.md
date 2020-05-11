@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 1.0.3 - 2020-05-11
+
+### Changed
+
+- Added tests for auth digest.
+
 ## 1.0.2 - 2020-05-07
 
 ### Added
