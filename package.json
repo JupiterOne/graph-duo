@@ -22,7 +22,7 @@
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
-    "@jupiterone/integration-sdk": "^0.17.0",
+    "@jupiterone/integration-sdk": "^0.18.0",
     "base-64": "^0.1.0",
     "crypto": "^1.0.1",
     "global": "^4.4.0",
