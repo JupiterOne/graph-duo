@@ -12,8 +12,7 @@ import {
   Response,
 } from './types';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const moment = require('moment');
+import * as moment from 'moment';
 
 const DATE_RFC2822 = 'ddd, DD MMM YYYY HH:mm:ss ZZ';
 
@@ -33,7 +32,7 @@ export default class DuoClient {
   private async fetch<T>(url: string): Promise<T> {
     const { integrationKey, secretKey } = this.config;
 
-    const date = moment.utc().format(DATE_RFC2822).replace('+', '-');
+    const date = moment.utc().format(DATE_RFC2822);
     const path = `/admin/v1/${url}`;
 
     const authHeader = buildAuthHeader({

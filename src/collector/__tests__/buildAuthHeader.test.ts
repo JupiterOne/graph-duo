@@ -1,6 +1,6 @@
-import buildAuthHeader from '../buildAuthHeader';
+import buildAuthHeader, { buildAuthDigest } from '../buildAuthHeader';
 
-test('applies the appropriate headers', () => {
+test('buildAuthHeader encodes integrationKey:digest', () => {
   expect(
     // Using sample data from https://duo.com/docs/adminapi#authentication
     buildAuthHeader({
@@ -15,4 +15,18 @@ test('applies the appropriate headers', () => {
   ).toEqual(
     'RElXSjhYNkFFWU9SNU9NQzZUUTE6YzFlZjQzNzY3YzNlYjNiMzI1OGRiZGRjYTZmOGQwOTQxZTA4NWI5Mg==',
   );
+});
+
+test('buildAuthDigest generates value known to authorize', () => {
+  expect(
+    buildAuthDigest({
+      date: 'Mon, 11 May 2020 18:07:52 +0000',
+      method: 'GET',
+      host: 'api-xxx.duosecurity.com',
+      path: '/admin/v1/settings',
+      params: '',
+      integrationKey: 'DIFIAAAAAAAAAA',
+      secretKey: 'topsecret123',
+    }),
+  ).toEqual('6a5f2e04a1392e0d540283e8bced5ea93b12ecea');
 });
