@@ -1,5 +1,5 @@
 import { createMockStepExecutionContext } from '@jupiterone/integration-sdk-testing';
-import { DuoIntegrationConfig } from 'src/types';
+import { DuoIntegrationConfig } from '../src/types';
 
 export function createStepContext() {
   const context = createMockStepExecutionContext<DuoIntegrationConfig>();

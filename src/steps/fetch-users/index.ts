@@ -2,6 +2,8 @@ import {
   IntegrationStep,
   IntegrationStepExecutionContext,
   createIntegrationRelationship,
+  Relationship,
+  Entity,
 } from '@jupiterone/integration-sdk-core';
 import {
   convertUser,
@@ -13,9 +15,9 @@ import {
   convertGroup,
 } from '../../converter';
 import { createDuoClient } from '../../collector';
-import { DuoIntegrationConfig } from 'src/types';
+import { DuoIntegrationConfig } from '../../types';
 
-const step: IntegrationStep = {
+const step: IntegrationStep<DuoIntegrationConfig> = {
   id: 'fetch-users',
   name: 'Fetch Users',
   types: [
@@ -42,15 +44,15 @@ const step: IntegrationStep = {
     const { response: users } = await client.fetchUsers();
 
     const accountEntity = convertAccount(client.siteId, settings);
-    const adminEntities = [];
-    const groupEntities = groups.map(convertGroup);
-    const userEntities = [];
-    const mfaTokenEntities = [];
+    const adminEntities: Entity[] = [];
+    const groupEntities: Entity[] = groups.map(convertGroup);
+    const userEntities: Entity[] = [];
+    const mfaTokenEntities: Entity[] = [];
 
-    const accountUserRelationships = [];
-    const accountAdminRelationships = [];
-    const groupUserRelationships = [];
-    const userMfaRelationships = [];
+    const accountUserRelationships: Relationship[] = [];
+    const accountAdminRelationships: Relationship[] = [];
+    const groupUserRelationships: Relationship[] = [];
+    const userMfaRelationships: Relationship[] = [];
 
     admins.forEach((admin) => {
       const adminEntity = convertAdmin(admin);

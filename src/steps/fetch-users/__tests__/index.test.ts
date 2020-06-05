@@ -1,4 +1,4 @@
-import { createStepContext } from 'test';
+import { createStepContext } from '../../../../test';
 import { Recording, setupRecording } from '@jupiterone/integration-sdk-testing';
 import step from '..';
 

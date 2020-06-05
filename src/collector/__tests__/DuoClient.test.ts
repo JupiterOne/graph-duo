@@ -1,4 +1,4 @@
-import { createStepContext } from 'test';
+import { createStepContext } from '../../../test';
 
 /* eslint-disable @typescript-eslint/camelcase */
 import { Recording, setupRecording } from '@jupiterone/integration-sdk-testing';

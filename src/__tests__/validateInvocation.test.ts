@@ -1,4 +1,4 @@
-import { createStepContext } from 'test';
+import { createStepContext } from '../../test';
 
 import {
   createMockExecutionContext,
@@ -7,7 +7,7 @@ import {
 } from '@jupiterone/integration-sdk-testing';
 
 import validateInvocation from '../validateInvocation';
-import { DuoIntegrationConfig } from 'src/types';
+import { DuoIntegrationConfig } from '../types';
 
 describe('validateInvocation config', () => {
   test('rejects if apiKey is not present', async () => {
