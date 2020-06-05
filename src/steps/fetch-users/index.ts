@@ -2,7 +2,7 @@ import {
   IntegrationStep,
   IntegrationStepExecutionContext,
   createIntegrationRelationship,
-} from '@jupiterone/integration-sdk';
+} from '@jupiterone/integration-sdk-core';
 import {
   convertUser,
   convertToken,
@@ -13,6 +13,7 @@ import {
   convertGroup,
 } from '../../converter';
 import { createDuoClient } from '../../collector';
+import { DuoIntegrationConfig } from 'src/types';
 
 const step: IntegrationStep = {
   id: 'fetch-users',
@@ -32,7 +33,7 @@ const step: IntegrationStep = {
   async executionHandler({
     instance,
     jobState,
-  }: IntegrationStepExecutionContext) {
+  }: IntegrationStepExecutionContext<DuoIntegrationConfig>) {
     const client = createDuoClient(instance.config);
 
     const { response: settings } = await client.fetchAccountSettings();

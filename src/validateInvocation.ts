@@ -1,10 +1,13 @@
-import { IntegrationExecutionContext } from '@jupiterone/integration-sdk';
-import { IntegrationError } from '@jupiterone/integration-sdk/src/errors';
+import {
+  IntegrationExecutionContext,
+  IntegrationError,
+} from '@jupiterone/integration-sdk-core';
 
 import { createDuoClient } from './collector';
+import { DuoIntegrationConfig } from './types';
 
 export default async function validateInvocation(
-  context: IntegrationExecutionContext,
+  context: IntegrationExecutionContext<DuoIntegrationConfig>,
 ): Promise<void> {
   const config = context.instance.config;
   const client = createDuoClient(config);

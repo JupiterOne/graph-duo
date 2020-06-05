@@ -4,14 +4,15 @@ import {
   createMockExecutionContext,
   Recording,
   setupRecording,
-} from '@jupiterone/integration-sdk/testing';
+} from '@jupiterone/integration-sdk-testing';
 
 import validateInvocation from '../validateInvocation';
+import { DuoIntegrationConfig } from 'src/types';
 
 describe('validateInvocation config', () => {
   test('rejects if apiKey is not present', async () => {
-    const context = createMockExecutionContext({
-      instanceConfig: {},
+    const context = createMockExecutionContext<DuoIntegrationConfig>({
+      instanceConfig: {} as DuoIntegrationConfig,
     });
 
     await expect(validateInvocation(context)).rejects.toThrow(/requires all/);

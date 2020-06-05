@@ -11,7 +11,7 @@ import {
   createIntegrationEntity,
   getTime,
   convertProperties,
-} from '@jupiterone/integration-sdk';
+} from '@jupiterone/integration-sdk-core';
 
 export function convertAccount(
   siteId: string,
