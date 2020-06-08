@@ -11,7 +11,7 @@ import {
   createIntegrationEntity,
   getTime,
   convertProperties,
-} from '@jupiterone/integration-sdk';
+} from '@jupiterone/integration-sdk-core';
 
 export function convertAccount(
   siteId: string,
@@ -50,10 +50,10 @@ export function convertUser(
         name: user.realname,
         firstName: user.firstname,
         lastName: user.lastname,
-        displayName: user.realname,
+        displayName: user.realname as string,
         username: user.username,
         createdOn: getTime(user.created),
-        lastLogin: getTime(user.last_login),
+        lastLogin: getTime(user.last_login as number),
         active: user.status.toLowerCase() === 'active',
         status: user.status,
         email: user.email,

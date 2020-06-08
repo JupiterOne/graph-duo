@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-import { IntegrationError } from '@jupiterone/integration-sdk/src/errors';
+import { IntegrationError } from '@jupiterone/integration-sdk-core';
 
 import buildAuthHeader from './buildAuthHeader';
 import {
