@@ -21,10 +21,6 @@ async function fetchPhones(
     const phoneEntity = await jobState.addEntity(convertPhone(phone));
 
     phone.users.forEach(async (user: DuoUser) => {
-      const userEntity = convertUser(user);
-
-      console.log(userEntity);
-
       await jobState.addRelationship(
         createDirectRelationship({
           _class: RelationshipClass.USES,
