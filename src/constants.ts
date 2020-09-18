@@ -1,5 +1,13 @@
 import { RelationshipClass } from '@jupiterone/integration-sdk-core';
 
+export const ACCOUNT_ENTITY = 'ACCOUNT_ENTITY';
+
+export const Steps = {
+  FETCH_USERS: 'fetch-users',
+  FETCH_PHONES: 'fetch-phones',
+  FETCH_INTEGRATIONS: 'fetch-integrations',
+};
+
 export const Entities = {
   ACCOUNT: {
     _type: 'duo_account',
@@ -25,6 +33,16 @@ export const Entities = {
     _type: 'mfa_device',
     _class: 'AccessKey',
     resourceName: 'MFA Token',
+  },
+  PHONE: {
+    _type: 'duo_phone',
+    _class: 'Device',
+    resourceName: 'Device',
+  },
+  INTEGRATION: {
+    _type: 'duo_integration',
+    _class: 'Application',
+    resourceName: 'Integration',
   },
 };
 
@@ -58,5 +76,17 @@ export const Relationships = {
     sourceType: Entities.USER._type,
     _class: RelationshipClass.ASSIGNED,
     targetType: Entities.MFA_DEVICE._type,
+  },
+  USER_USES_PHONE: {
+    _type: 'duo_user_uses_phone',
+    sourceType: Entities.USER._type,
+    _class: RelationshipClass.USES,
+    targetType: Entities.PHONE._type,
+  },
+  ACCOUNT_HAS_INTEGRATION: {
+    _type: 'duo_account_has_integration',
+    sourceType: Entities.ACCOUNT._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.INTEGRATION._type,
   },
 };

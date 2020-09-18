@@ -10,6 +10,8 @@ import {
   DuoGroup,
   DuoUser,
   Response,
+  DuoPhone,
+  DuoIntegration,
 } from './types';
 
 import * as moment from 'moment';
@@ -76,5 +78,13 @@ export default class DuoClient {
 
   async fetchAdmins(): Promise<Response<DuoAdmin[]>> {
     return this.fetch<Response<DuoAdmin[]>>('admins');
+  }
+
+  async fetchPhones(): Promise<Response<DuoPhone[]>> {
+    return this.fetch<Response<DuoPhone[]>>('phones');
+  }
+
+  async fetchIntegrations(): Promise<Response<DuoIntegration[]>> {
+    return this.fetch<Response<DuoIntegration[]>>('integrations');
   }
 }

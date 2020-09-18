@@ -6,6 +6,8 @@ import {
   DuoAccountSettings,
   DuoGroup,
   DuoAdmin,
+  DuoPhone,
+  DuoIntegration,
 } from '../collector/types';
 import {
   createIntegrationEntity,
@@ -116,8 +118,8 @@ export function convertToken(
         _type: Entities.MFA_DEVICE._type,
         _class: Entities.MFA_DEVICE._class,
         id: token.token_id,
-        name: token.token_id,
-        displayName: token.token_id,
+        name: token.token_id || 'name',
+        displayName: token.token_id || 'name',
         serial: token.serial,
         type: token.type,
         factorType: 'token',
@@ -137,8 +139,8 @@ export function convertU2fToken(
         _type: Entities.MFA_DEVICE._type,
         _class: Entities.MFA_DEVICE._class,
         id: token.registration_id,
-        name: token.registration_id,
-        displayName: token.registration_id,
+        name: token.registration_id || 'name',
+        displayName: token.registration_id || 'name',
         createdOn: getTime(token.date_added),
         factorType: 'u2f',
       },
@@ -157,10 +159,77 @@ export function convertWebAuthnToken(
         _type: Entities.MFA_DEVICE._type,
         _class: Entities.MFA_DEVICE._class,
         id: token.webauthnkey,
-        name: token.credential_name,
+        name: token.credential_name || 'name',
         displayName: `${token.credential_name} ${token.webauthnkey}`,
         createdOn: getTime(token.date_added),
         factorType: 'webauthn',
+      },
+    },
+  });
+}
+
+/**
+ * Devices must validate the data-model property `platform`
+ */
+function getPlatform(duoPlatform: string): string {
+  const dataModelPlatforms = [
+    'darwin',
+    'linux',
+    'unix',
+    'windows',
+    'android',
+    'ios',
+    'embedded',
+  ];
+  for (const dataModelPlatform of dataModelPlatforms) {
+    if (new RegExp(dataModelPlatform, 'i').test(duoPlatform)) {
+      return dataModelPlatform;
+    }
+  }
+  return 'other';
+}
+
+export function convertPhone(
+  phone: DuoPhone,
+): ReturnType<typeof createIntegrationEntity> {
+  return createIntegrationEntity({
+    entityData: {
+      source: phone,
+      assign: {
+        _key: phone.phone_id,
+        _type: Entities.PHONE._type,
+        _class: Entities.PHONE._class,
+        id: phone.phone_id,
+        name: phone.name,
+        category: 'mobile',
+        make: 'UNKNOWN',
+        platform: getPlatform(phone.platform),
+        model: phone.model,
+        encrypted: phone.encrypted === 'Encrypted',
+        serial: 'UNKNOWN',
+      },
+    },
+  });
+}
+
+export function convertIntegration(
+  integration: DuoIntegration,
+): ReturnType<typeof createIntegrationEntity> {
+  (integration as any).secret_key = undefined;
+  const notes = integration.notes;
+  return createIntegrationEntity({
+    entityData: {
+      source: integration,
+      assign: {
+        _key: integration.integration_key,
+        _type: Entities.INTEGRATION._type,
+        _class: Entities.INTEGRATION._class,
+        id: integration.integration_key,
+        name: integration.name,
+        notes:
+          notes !== undefined && notes !== null && !Array.isArray(notes)
+            ? [notes]
+            : notes,
       },
     },
   });

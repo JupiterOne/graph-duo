@@ -114,3 +114,47 @@ export interface DuoAdmin {
   role: string;
   status: string;
 }
+
+export interface DuoPhone {
+  activated: boolean;
+  capabilities: string[];
+  encrypted: string;
+  extension: string;
+  fingerprint: string;
+  last_seen: string;
+  model: string;
+  name: string;
+  number: string;
+  phone_id: string;
+  platform: string;
+  screenlock: string;
+  sms_passcodes_sent: boolean;
+  tampered: string;
+  type: string;
+  users: DuoUser[];
+}
+
+export interface DuoIntegration {
+  adminapi_admins: number;
+  adminapi_info: number;
+  adminapi_integrations: number;
+  adminapi_read_log: number;
+  adminapi_read_resource: number;
+  adminapi_settings: number;
+  adminapi_write_resource: number;
+  enroll_policy: string;
+  groups_allowed?: DuoGroup[];
+  integration_key: string;
+  ip_whitelist?: any[];
+  ip_whitelist_enroll_policy?: string;
+  missing_web_referer_policy?: string;
+  name: string;
+  notes: string;
+  secret_key: string;
+  self_service_allowed?: boolean;
+  trusted_device_days?: number;
+  type: string;
+  username_normalization_policy: string;
+  visual_style: string;
+  web_referers_enabled?: number;
+}

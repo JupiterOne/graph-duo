@@ -17,10 +17,10 @@ import {
 } from '../converter';
 import { createDuoClient } from '../collector';
 import { DuoIntegrationConfig } from '../types';
-import { Entities, Relationships, ACCOUNT_ENTITY } from '../constants';
+import { Entities, Relationships, ACCOUNT_ENTITY, Steps } from '../constants';
 
 const step: IntegrationStep<DuoIntegrationConfig> = {
-  id: 'fetch-users',
+  id: Steps.FETCH_USERS,
   name: 'Fetch Users',
   entities: [
     Entities.ACCOUNT,
@@ -48,6 +48,7 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
     const { response: users } = await client.fetchUsers();
 
     const accountEntity = convertAccount(client.siteId, settings);
+    await jobState.setData(ACCOUNT_ENTITY, accountEntity);
     const adminEntities: Entity[] = [];
     const groupEntities: Entity[] = groups.map(convertGroup);
     const userEntities: Entity[] = [];
