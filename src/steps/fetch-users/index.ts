@@ -85,7 +85,7 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
 
       user.groups &&
         user.groups.forEach((group) => {
-          const groupEntity = convertToken(group);
+          const groupEntity = convertGroup(group);
           groupUserRelationships.push(
             createDirectRelationship({
               from: groupEntity,
