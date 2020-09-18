@@ -10,3 +10,11 @@ is required to run and test this integration.
 This integration requires a Duo account with Admin API access. Follow the
 instructions at https://duo.com/docs/adminapi to obtain Admin API access for
 your account.
+
+The integration requires the following permissions:
+
+- Grant administrators
+- Grant read information
+- Grant applications
+- Grant settings
+- Grant read resource
