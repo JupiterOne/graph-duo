@@ -14,10 +14,10 @@ import {
   convertAccount,
   convertAdmin,
   convertGroup,
-} from '../../converter';
-import { createDuoClient } from '../../collector';
-import { DuoIntegrationConfig } from '../../types';
-import { Entities, Relationships } from '../../constants';
+} from '../converter';
+import { createDuoClient } from '../collector';
+import { DuoIntegrationConfig } from '../types';
+import { Entities, Relationships, ACCOUNT_ENTITY } from '../constants';
 
 const step: IntegrationStep<DuoIntegrationConfig> = {
   id: 'fetch-users',

@@ -3,7 +3,7 @@ import { IntegrationInvocationConfig } from '@jupiterone/integration-sdk-core';
 import instanceConfigFields from './instanceConfigFields';
 import validateInvocation from './validateInvocation';
 
-import fetchUsers from './steps/fetch-users';
+import fetchUsers from './steps/fetchUsers';
 import { DuoIntegrationConfig } from './types';
 
 export const invocationConfig: IntegrationInvocationConfig<DuoIntegrationConfig> = {
