@@ -50,12 +50,13 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
     const accountEntity = convertAccount(client.siteId, settings);
     await jobState.setData(ACCOUNT_ENTITY, accountEntity);
     const adminEntities: Entity[] = [];
-    const groupEntities: Entity[] = groups.map(convertGroup);
+    const groupEntities: Entity[] = [];
     const userEntities: Entity[] = [];
     const mfaTokenEntities: Entity[] = [];
 
     const accountUserRelationships: Relationship[] = [];
     const accountAdminRelationships: Relationship[] = [];
+    const accountGroupRelationships: Relationship[] = [];
     const groupUserRelationships: Relationship[] = [];
     const userMfaRelationships: Relationship[] = [];
 
@@ -67,6 +68,19 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
         createDirectRelationship({
           from: accountEntity,
           to: adminEntity,
+          _class: RelationshipClass.HAS,
+        }),
+      );
+    });
+
+    groups.forEach((group) => {
+      const groupEntity = convertGroup(group);
+      groupEntities.push(groupEntity);
+
+      accountGroupRelationships.push(
+        createDirectRelationship({
+          from: accountEntity,
+          to: groupEntity,
           _class: RelationshipClass.HAS,
         }),
       );
@@ -144,6 +158,7 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
       jobState.addEntities(mfaTokenEntities),
       jobState.addRelationships(accountAdminRelationships),
       jobState.addRelationships(accountUserRelationships),
+      jobState.addRelationships(accountGroupRelationships),
       jobState.addRelationships(groupUserRelationships),
       jobState.addRelationships(userMfaRelationships),
     ]);
