@@ -12,6 +12,7 @@ import {
   getTime,
   convertProperties,
 } from '@jupiterone/integration-sdk-core';
+import { Entities } from '../constants';
 
 export function convertAccount(
   siteId: string,
@@ -25,8 +26,8 @@ export function convertAccount(
         _key: `duo-account:${siteId}:${data.name
           .toLowerCase()
           .replace(/\s/, '-')}`,
-        _type: 'duo_account',
-        _class: 'Account',
+        _type: Entities.ACCOUNT._type,
+        _class: Entities.ACCOUNT._class,
         name: data.name,
         siteId,
         displayName: `${data.name} Duo Account`,
@@ -44,8 +45,8 @@ export function convertUser(
       source: user,
       assign: {
         _key: `duo-user:${user.user_id}`,
-        _type: 'duo_user',
-        _class: 'User',
+        _type: Entities.USER._type,
+        _class: Entities.USER._class,
         id: user.user_id,
         name: user.realname,
         firstName: user.firstname,
@@ -73,8 +74,8 @@ export function convertGroup(
       assign: {
         ...convertProperties(group),
         _key: `duo-group:${group.group_id}`,
-        _type: 'duo_group',
-        _class: 'UserGroup',
+        _type: Entities.USER_GROUP._type,
+        _class: Entities.USER_GROUP._class,
         id: group.group_id,
         description: group.desc,
         active: group.status.toLowerCase() === 'active',
@@ -92,8 +93,8 @@ export function convertAdmin(
       assign: {
         ...convertProperties(admin),
         _key: `duo-admin:${admin.admin_id}`,
-        _type: 'duo_admin',
-        _class: 'User',
+        _type: Entities.ADMIN._type,
+        _class: Entities.ADMIN._class,
         id: admin.admin_id,
         active: admin.status.toLowerCase() === 'active',
         admin: true,
@@ -112,8 +113,8 @@ export function convertToken(
       source: token,
       assign: {
         _key: `mfa-device:${token.token_id}`,
-        _type: 'mfa_device',
-        _class: 'AccessKey',
+        _type: Entities.MFA_DEVICE._type,
+        _class: Entities.MFA_DEVICE._class,
         id: token.token_id,
         name: token.token_id,
         displayName: token.token_id,
@@ -133,8 +134,8 @@ export function convertU2fToken(
       source: token,
       assign: {
         _key: `mfa-device:${token.registration_id}`,
-        _type: 'mfa_device',
-        _class: 'AccessKey',
+        _type: Entities.MFA_DEVICE._type,
+        _class: Entities.MFA_DEVICE._class,
         id: token.registration_id,
         name: token.registration_id,
         displayName: token.registration_id,
@@ -153,8 +154,8 @@ export function convertWebAuthnToken(
       source: token,
       assign: {
         _key: `mfa-device:${token.webauthnkey}`,
-        _type: 'mfa_device',
-        _class: 'AccessKey',
+        _type: Entities.MFA_DEVICE._type,
+        _class: Entities.MFA_DEVICE._class,
         id: token.webauthnkey,
         name: token.credential_name,
         displayName: `${token.credential_name} ${token.webauthnkey}`,
