@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 3.0.0 - 2020-09-21
+
+## Changed
+
+- Upgraded to SDK v3
+
 ### Added
 
 - `duo_phone` entities
