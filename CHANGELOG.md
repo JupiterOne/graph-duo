@@ -8,6 +8,16 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- `duo_phone` entities
+- `duo_integration` entities
+- `duo_account_has_group` relationships
+
+### Fixed
+
+- `duo_group_has_user` relationship was not working correctly
+
 ## 1.0.4 - 2020-05-11
 
 ### Fixed

@@ -1,7 +1,8 @@
 import {
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createIntegrationRelationship,
+  createDirectRelationship,
+  RelationshipClass,
   Relationship,
   Entity,
 } from '@jupiterone/integration-sdk-core';
@@ -13,24 +14,27 @@ import {
   convertAccount,
   convertAdmin,
   convertGroup,
-} from '../../converter';
-import { createDuoClient } from '../../collector';
-import { DuoIntegrationConfig } from '../../types';
+} from '../converter';
+import { createDuoClient } from '../collector';
+import { DuoIntegrationConfig } from '../types';
+import { Entities, Relationships, ACCOUNT_ENTITY, Steps } from '../constants';
 
 const step: IntegrationStep<DuoIntegrationConfig> = {
-  id: 'fetch-users',
+  id: Steps.FETCH_USERS,
   name: 'Fetch Users',
-  types: [
-    'duo_account',
-    'duo_admin',
-    'duo_user',
-    'duo_group',
-    'mfa_device',
-    'duo_account_has_group',
-    'duo_account_has_admin',
-    'duo_account_has_user',
-    'duo_group_has_user',
-    'duo_user_assigned_device',
+  entities: [
+    Entities.ACCOUNT,
+    Entities.ADMIN,
+    Entities.USER,
+    Entities.USER_GROUP,
+    Entities.MFA_DEVICE,
+  ],
+  relationships: [
+    Relationships.ACCOUNT_HAS_GROUP,
+    Relationships.ACCOUNT_HAS_ADMIN,
+    Relationships.ACCOUNT_HAS_USER,
+    Relationships.GROUP_HAS_USER,
+    Relationships.USER_ASSIGNED_DEVICE,
   ],
   async executionHandler({
     instance,
@@ -44,13 +48,15 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
     const { response: users } = await client.fetchUsers();
 
     const accountEntity = convertAccount(client.siteId, settings);
+    await jobState.setData(ACCOUNT_ENTITY, accountEntity);
     const adminEntities: Entity[] = [];
-    const groupEntities: Entity[] = groups.map(convertGroup);
+    const groupEntities: Entity[] = [];
     const userEntities: Entity[] = [];
     const mfaTokenEntities: Entity[] = [];
 
     const accountUserRelationships: Relationship[] = [];
     const accountAdminRelationships: Relationship[] = [];
+    const accountGroupRelationships: Relationship[] = [];
     const groupUserRelationships: Relationship[] = [];
     const userMfaRelationships: Relationship[] = [];
 
@@ -59,10 +65,23 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
       adminEntities.push(adminEntity);
 
       accountAdminRelationships.push(
-        createIntegrationRelationship({
+        createDirectRelationship({
           from: accountEntity,
           to: adminEntity,
-          _class: 'HAS',
+          _class: RelationshipClass.HAS,
+        }),
+      );
+    });
+
+    groups.forEach((group) => {
+      const groupEntity = convertGroup(group);
+      groupEntities.push(groupEntity);
+
+      accountGroupRelationships.push(
+        createDirectRelationship({
+          from: accountEntity,
+          to: groupEntity,
+          _class: RelationshipClass.HAS,
         }),
       );
     });
@@ -72,21 +91,21 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
       userEntities.push(userEntity);
 
       accountUserRelationships.push(
-        createIntegrationRelationship({
+        createDirectRelationship({
           from: accountEntity,
           to: userEntity,
-          _class: 'HAS',
+          _class: RelationshipClass.HAS,
         }),
       );
 
       user.groups &&
         user.groups.forEach((group) => {
-          const groupEntity = convertToken(group);
+          const groupEntity = convertGroup(group);
           groupUserRelationships.push(
-            createIntegrationRelationship({
+            createDirectRelationship({
               from: groupEntity,
               to: userEntity,
-              _class: 'HAS',
+              _class: RelationshipClass.HAS,
             }),
           );
         });
@@ -96,10 +115,10 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
           const tokenEntity = convertToken(token);
           mfaTokenEntities.push(tokenEntity);
           userMfaRelationships.push(
-            createIntegrationRelationship({
+            createDirectRelationship({
               from: userEntity,
               to: tokenEntity,
-              _class: 'ASSIGNED',
+              _class: RelationshipClass.ASSIGNED,
             }),
           );
         });
@@ -109,10 +128,10 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
           const tokenEntity = convertU2fToken(token);
           mfaTokenEntities.push(tokenEntity);
           userMfaRelationships.push(
-            createIntegrationRelationship({
+            createDirectRelationship({
               from: userEntity,
               to: tokenEntity,
-              _class: 'ASSIGNED',
+              _class: RelationshipClass.ASSIGNED,
             }),
           );
         });
@@ -122,10 +141,10 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
           const tokenEntity = convertWebAuthnToken(token);
           mfaTokenEntities.push(tokenEntity);
           userMfaRelationships.push(
-            createIntegrationRelationship({
+            createDirectRelationship({
               from: userEntity,
               to: tokenEntity,
-              _class: 'ASSIGNED',
+              _class: RelationshipClass.ASSIGNED,
             }),
           );
         });
@@ -139,6 +158,7 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
       jobState.addEntities(mfaTokenEntities),
       jobState.addRelationships(accountAdminRelationships),
       jobState.addRelationships(accountUserRelationships),
+      jobState.addRelationships(accountGroupRelationships),
       jobState.addRelationships(groupUserRelationships),
       jobState.addRelationships(userMfaRelationships),
     ]);
