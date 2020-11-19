@@ -8,6 +8,7 @@ import {
 
 import validateInvocation from '../validateInvocation';
 import { DuoIntegrationConfig } from '../types';
+import { IntegrationProviderAuthenticationError } from '@jupiterone/integration-sdk-core';
 
 describe('validateInvocation config', () => {
   test('rejects if apiKey is not present', async () => {
@@ -38,8 +39,8 @@ describe('validateInvocation API access', () => {
     const context = createStepContext();
     context.instance.config.secretKey = 'testingUnauthorized';
 
-    await expect(validateInvocation(context)).rejects.toThrow(
-      /Failed to authenticate/,
+    await expect(validateInvocation(context)).rejects.toBeInstanceOf(
+      IntegrationProviderAuthenticationError,
     );
   });
 

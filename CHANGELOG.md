@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 3.1.1 - 2020-10-29
+
+### Changed
+
+- Integration validation to throw an authentication error to the job log
+
 ## 3.1.0 - 2020-10-29
 
 ### Changed

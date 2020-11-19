@@ -1,6 +1,7 @@
 import {
-  IntegrationExecutionContext,
   IntegrationError,
+  IntegrationExecutionContext,
+  IntegrationProviderAuthenticationError,
 } from '@jupiterone/integration-sdk-core';
 
 import { createDuoClient } from './collector';
@@ -15,10 +16,19 @@ export default async function validateInvocation(
   try {
     await client.fetchAccountSettings();
   } catch (err) {
-    throw new IntegrationError({
-      message: 'Failed to authenticate with provided credentials',
-      cause: err,
-      code: err.code,
-    });
+    if (err.code == 401) {
+      throw new IntegrationProviderAuthenticationError({
+        cause: err,
+        endpoint: '/admin/v1/settings',
+        status: err.code,
+        statusText: err.message,
+      });
+    } else {
+      throw new IntegrationError({
+        cause: err,
+        code: err.code,
+        message: err.message,
+      });
+    }
   }
 }
