@@ -12,7 +12,8 @@ and this project adheres to
 
 ### Changed
 
-- Integration validation to throw an authentication error to the job log
+- Integration validation to throw validation errors which will show up in the
+  job log
 
 ## 3.1.0 - 2020-10-29
 
