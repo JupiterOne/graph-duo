@@ -1,7 +1,7 @@
 import {
-  IntegrationError,
   IntegrationExecutionContext,
   IntegrationProviderAuthenticationError,
+  IntegrationValidationError,
 } from '@jupiterone/integration-sdk-core';
 
 import { createDuoClient } from './collector';
@@ -24,11 +24,8 @@ export default async function validateInvocation(
         statusText: err.message,
       });
     } else {
-      throw new IntegrationError({
-        cause: err,
-        code: err.code,
-        message: err.message,
-      });
+      context.logger.warn({ err }, 'Could not list tokens for user');
+      throw new IntegrationValidationError(`${err.code}: ${err.message}`);
     }
   }
 }
