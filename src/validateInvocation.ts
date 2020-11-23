@@ -24,7 +24,6 @@ export default async function validateInvocation(
         statusText: err.message,
       });
     } else {
-      context.logger.warn({ err }, err.message);
       throw new IntegrationValidationError(`${err.code}: ${err.message}`);
     }
   }
