@@ -4,13 +4,13 @@
 
 - Visualize Duo users, groups, devices, applications, and access keys in the JupiterOne graph.
 - Map Duo users to employees in your JupiterOne account.
-- Monitor changes to Duo users and other SSO assets using JupiterOne alerts.
+- Monitor changes to Duo users, groups, and access management data using JupiterOne alerts.
 - Create an employee entity that is used to map users across your organization to an employee 
 via a matching email property.
 
 ## How it Works
 
-- JupiterOne periodically fetches Duo users and SSO assets to update the graph.
+- JupiterOne periodically fetches Duo users, groups, and access management data to update the graph.
 - Write JupiterOne queries to review and monitor updates to the graph.
 - Configure alerts to take action when the JupiterOne graph changes.
 
