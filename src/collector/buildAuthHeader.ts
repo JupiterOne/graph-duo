@@ -1,5 +1,4 @@
-import base64 from 'base-64';
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 
 interface BuildAuthHeaderOptions {
   date: string;
@@ -12,7 +11,9 @@ interface BuildAuthHeaderOptions {
 }
 
 export default function buildAuthHeader(input: BuildAuthHeaderOptions): string {
-  return base64.encode(`${input.integrationKey}:${buildAuthDigest(input)}`);
+  return Buffer.from(
+    `${input.integrationKey}:${buildAuthDigest(input)}`,
+  ).toString('base64');
 }
 
 export function buildAuthDigest({

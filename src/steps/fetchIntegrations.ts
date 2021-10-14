@@ -4,6 +4,7 @@ import {
   createDirectRelationship,
   RelationshipClass,
   Entity,
+  IntegrationError,
 } from '@jupiterone/integration-sdk-core';
 import { createDuoClient, DuoIntegration } from '../collector';
 import { DuoIntegrationConfig } from '../types';
@@ -16,7 +17,16 @@ async function fetchIntegrations(
   const { instance, jobState } = context;
   const client = createDuoClient(instance.config);
 
-  const accountEntity: Entity = await jobState.getData(ACCOUNT_ENTITY);
+  const accountEntity = await jobState.getData<Entity>(ACCOUNT_ENTITY);
+
+  if (!accountEntity) {
+    throw new IntegrationError({
+      code: 'MISSING_ACCOUNT_ENTITY',
+      message:
+        'Missing account entity. Cannot ingest Duo integration entities.',
+      fatal: true,
+    });
+  }
 
   const { response: integrations } = await client.fetchIntegrations();
 
