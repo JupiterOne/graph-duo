@@ -1,0 +1,4 @@
+---
+sourceId: managed:duo
+integrationDefinitionId: "${integration_definition_id}"
+questions: []

@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 4.0.0 - 2021-10-14
+
+### Changed
+
+- Upgrade to latest patterns and SDK
+- Removed unnecessary packages
+
 ## 3.1.1 - 2020-10-29
 
 ### Changed
