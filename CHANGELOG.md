@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 4.0.1 - 2021-10-14
+
+### Fixed
+
+- Fixed typo in `README.md`
+
 ## 4.0.0 - 2021-10-14
 
 ### Changed
