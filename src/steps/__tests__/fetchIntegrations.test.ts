@@ -30,7 +30,22 @@ test('step - fetch integrations', async () => {
 
   expect(entities.length).toBeGreaterThan(0);
   expect(entities).toMatchGraphObjectSchema({
-    _class: Entities.INTEGRATION._class,
-    schema: {},
+    _class: [Entities.INTEGRATION._class],
+    schema: {
+      additionalProperties: false,
+      properties: {
+        _type: { const: 'duo_integration' },
+        _rawData: {
+          type: 'array',
+          items: { type: 'object' },
+        },
+        id: { type: 'string' },
+        name: { type: 'string' },
+        notes: {
+          type: 'array',
+          items: { type: 'string' },
+        },
+      },
+    },
   });
 });

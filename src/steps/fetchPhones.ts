@@ -5,7 +5,7 @@ import {
   RelationshipClass,
 } from '@jupiterone/integration-sdk-core';
 import { convertUser, convertPhone } from '../converter';
-import { createDuoClient, DuoPhone, DuoUser } from '../collector';
+import { createDuoClient } from '../collector';
 import { DuoIntegrationConfig } from '../types';
 import { Entities, Relationships, Steps } from '../constants';
 
@@ -17,10 +17,10 @@ async function fetchPhones(
 
   const { response: phones } = await client.fetchPhones();
 
-  phones.forEach(async (phone: DuoPhone) => {
+  for (const phone of phones) {
     const phoneEntity = await jobState.addEntity(convertPhone(phone));
 
-    phone.users.forEach(async (user: DuoUser) => {
+    for (const user of phone.users) {
       await jobState.addRelationship(
         createDirectRelationship({
           _class: RelationshipClass.USES,
@@ -28,8 +28,8 @@ async function fetchPhones(
           to: phoneEntity,
         }),
       );
-    });
-  });
+    }
+  }
 }
 
 const step: IntegrationStep<DuoIntegrationConfig> = {

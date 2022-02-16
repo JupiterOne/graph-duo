@@ -11,10 +11,14 @@ import {
 } from '../collector/types';
 import {
   createIntegrationEntity,
-  getTime,
+  parseTimePropertyValue,
   convertProperties,
 } from '@jupiterone/integration-sdk-core';
 import { Entities } from '../constants';
+
+function toUndefinedWhenNull(v: any) {
+  return v === null ? undefined : v;
+}
 
 export function convertAccount(
   siteId: string,
@@ -51,12 +55,12 @@ export function convertUser(
         _class: Entities.USER._class,
         id: user.user_id,
         name: user.realname,
-        firstName: user.firstname,
-        lastName: user.lastname,
+        firstName: toUndefinedWhenNull(user.firstname),
+        lastName: toUndefinedWhenNull(user.lastname),
         displayName: user.realname as string,
         username: user.username,
-        createdOn: getTime(user.created),
-        lastLogin: getTime(user.last_login as number),
+        createdOn: parseTimePropertyValue(user.created),
+        lastLogin: parseTimePropertyValue(user.last_login as number),
         active: user.status.toLowerCase() === 'active',
         status: user.status,
         email: user.email,
@@ -110,6 +114,8 @@ export function convertAdmin(
 export function convertToken(
   token: DuoToken,
 ): ReturnType<typeof createIntegrationEntity> {
+  const tokenName = toUndefinedWhenNull(token.token_id);
+
   return createIntegrationEntity({
     entityData: {
       source: token,
@@ -118,8 +124,8 @@ export function convertToken(
         _type: Entities.MFA_DEVICE._type,
         _class: Entities.MFA_DEVICE._class,
         id: token.token_id,
-        name: token.token_id,
-        displayName: token.token_id,
+        name: tokenName,
+        displayName: tokenName,
         serial: token.serial,
         type: token.type,
         factorType: 'token',
@@ -141,7 +147,7 @@ export function convertU2fToken(
         id: token.registration_id,
         name: token.registration_id,
         displayName: token.registration_id,
-        createdOn: getTime(token.date_added),
+        createdOn: parseTimePropertyValue(token.date_added),
         factorType: 'u2f',
       },
     },
@@ -161,7 +167,7 @@ export function convertWebAuthnToken(
         id: token.webauthnkey,
         name: token.credential_name,
         displayName: `${token.credential_name} ${token.webauthnkey}`,
-        createdOn: getTime(token.date_added),
+        createdOn: parseTimePropertyValue(token.date_added),
         factorType: 'webauthn',
       },
     },
@@ -192,6 +198,8 @@ function getPlatform(duoPlatform: string): string {
 export function convertPhone(
   phone: DuoPhone,
 ): ReturnType<typeof createIntegrationEntity> {
+  const name = toUndefinedWhenNull(phone.name);
+
   return createIntegrationEntity({
     entityData: {
       source: phone,
@@ -200,7 +208,8 @@ export function convertPhone(
         _type: Entities.PHONE._type,
         _class: Entities.PHONE._class,
         id: phone.phone_id,
-        name: phone.name,
+        name,
+        displayName: name,
         category: 'mobile',
         make: 'UNKNOWN',
         platform: getPlatform(phone.platform),

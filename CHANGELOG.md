@@ -8,6 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- Upgrade integration to latest SDK packages
+
+### Fixed
+
+- Fix various async bugs
+
 ## 4.0.1 - 2021-10-14
 
 ### Fixed
