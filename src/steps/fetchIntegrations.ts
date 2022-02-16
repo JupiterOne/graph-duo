@@ -6,7 +6,7 @@ import {
   Entity,
   IntegrationError,
 } from '@jupiterone/integration-sdk-core';
-import { createDuoClient, DuoIntegration } from '../collector';
+import { createDuoClient } from '../collector';
 import { DuoIntegrationConfig } from '../types';
 import { Entities, Relationships, Steps, ACCOUNT_ENTITY } from '../constants';
 import { convertIntegration } from '../converter';
@@ -30,7 +30,7 @@ async function fetchIntegrations(
 
   const { response: integrations } = await client.fetchIntegrations();
 
-  integrations.forEach(async (integration: DuoIntegration) => {
+  for (const integration of integrations) {
     const integrationEntity = await jobState.addEntity(
       convertIntegration(integration),
     );
@@ -42,7 +42,7 @@ async function fetchIntegrations(
         to: integrationEntity,
       }),
     );
-  });
+  }
 }
 
 const step: IntegrationStep<DuoIntegrationConfig> = {

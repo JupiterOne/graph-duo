@@ -22,7 +22,24 @@ test('step - fetch phones', async () => {
 
   expect(entities.length).toBeGreaterThan(0);
   expect(entities).toMatchGraphObjectSchema({
-    _class: Entities.PHONE._class,
-    schema: {},
+    _class: [Entities.PHONE._class],
+    schema: {
+      additionalProperties: false,
+      properties: {
+        _type: { const: 'duo_phone' },
+        _rawData: {
+          type: 'array',
+          items: { type: 'object' },
+        },
+        id: { type: 'string' },
+        name: { type: 'string' },
+        category: { type: 'string' },
+        make: { type: 'string' },
+        platform: { type: 'string' },
+        model: { type: 'string' },
+        encrypted: { type: 'boolean' },
+        serial: { type: 'string' },
+      },
+    },
   });
 });

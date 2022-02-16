@@ -34,14 +34,14 @@
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
-    "@jupiterone/integration-sdk-core": "^7.0.0",
-    "@jupiterone/integration-sdk-dev-tools": "^7.0.0",
-    "@jupiterone/integration-sdk-testing": "^7.0.0",
+    "@jupiterone/integration-sdk-core": "^8.3.2",
+    "@jupiterone/integration-sdk-dev-tools": "^8.3.2",
+    "@jupiterone/integration-sdk-testing": "^8.3.2",
     "@types/node": "^14",
     "@types/node-fetch": "^2.5.7",
     "dotenv": "^8.2.0"
   },
   "peerDependencies": {
-    "@jupiterone/integration-sdk-core": "^7.0.0"
+    "@jupiterone/integration-sdk-core": "^8.3.2"
   }
 }
