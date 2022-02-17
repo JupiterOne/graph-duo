@@ -3,8 +3,6 @@ import {
   IntegrationStepExecutionContext,
   createDirectRelationship,
   RelationshipClass,
-  Relationship,
-  Entity,
 } from '@jupiterone/integration-sdk-core';
 import {
   convertUser,
