@@ -18,7 +18,7 @@ test('fetchSettings okay', async () => {
   const context = createStepContext();
   const provider = createDuoClient(context.instance.config);
 
-  const response = await provider.fetchAccountSettings();
+  const response = await provider.fetchWithRetry('settings');
 
   expect(response).toEqual({
     response: {
@@ -71,7 +71,7 @@ test('fetchUsers okay', async () => {
   const context = createStepContext();
   const provider = createDuoClient(context.instance.config);
 
-  const response = await provider.fetchUsers();
+  const response = await provider.fetchWithRetry('users');
 
   expect(response).toEqual(
     expect.objectContaining({ metadata: { total_objects: 1 } }),

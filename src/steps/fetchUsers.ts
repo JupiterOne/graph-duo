@@ -41,9 +41,15 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
   }: IntegrationStepExecutionContext<DuoIntegrationConfig>) {
     const client = createDuoClient(instance.config);
 
-    //Account
-    const { response: settings } = await client.fetchAccountSettings();
-    const accountEntity = convertAccount(client.siteId, settings);
+    // TODO - Should this step be broken out into separate fetchAccount, fetchUsers
+    // fetchGroups, and fetchTokens?
+
+    //Account - No pagination available or needed for this call.
+    const accountResponse = await client.fetchWithRetry('settings');
+    const accountEntity = convertAccount(
+      client.siteId,
+      accountResponse.response,
+    );
     await jobState.setData(ACCOUNT_ENTITY, accountEntity);
     await jobState.addEntity(accountEntity);
 

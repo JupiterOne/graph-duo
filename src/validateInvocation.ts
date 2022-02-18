@@ -14,7 +14,7 @@ export default async function validateInvocation(
   const client = createDuoClient(config);
 
   try {
-    await client.fetchAccountSettings();
+    await client.fetchWithRetry('settings');
   } catch (err) {
     if (err.code == 401) {
       throw new IntegrationProviderAuthenticationError({

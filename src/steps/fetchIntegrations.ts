@@ -8,6 +8,7 @@ import {
 } from '@jupiterone/integration-sdk-core';
 import { createDuoClient } from '../collector';
 import { DuoIntegrationConfig } from '../types';
+import { DuoIntegration, Response } from '../collector/types';
 import { Entities, Relationships, Steps, ACCOUNT_ENTITY } from '../constants';
 import { convertIntegration } from '../converter';
 
@@ -28,21 +29,25 @@ async function fetchIntegrations(
     });
   }
 
-  const { response: integrations } = await client.fetchIntegrations();
+  //Integrations
+  await client.fetchWithPagination<Response<DuoIntegration[]>>(
+    'integrations',
+    (response) => {
+      const integrations = response.response;
+      integrations.forEach(async (integration) => {
+        const integrationEntity = convertIntegration(integration);
+        await jobState.addEntity(integrationEntity);
 
-  for (const integration of integrations) {
-    const integrationEntity = await jobState.addEntity(
-      convertIntegration(integration),
-    );
-
-    await jobState.addRelationship(
-      createDirectRelationship({
-        _class: RelationshipClass.HAS,
-        from: accountEntity,
-        to: integrationEntity,
-      }),
-    );
-  }
+        await jobState.addRelationship(
+          createDirectRelationship({
+            from: accountEntity,
+            to: integrationEntity,
+            _class: RelationshipClass.HAS,
+          }),
+        );
+      });
+    },
+  );
 }
 
 const step: IntegrationStep<DuoIntegrationConfig> = {
