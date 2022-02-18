@@ -8,12 +8,16 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 4.1.0 - 2022-02-18
+
 ### Changed
 
 - Upgrade integration to latest SDK packages
 
 ### Fixed
 
+- 429 errors are now retried.
+- Pagination is now used in available API calls.
 - Fix various async bugs
 
 ## 4.0.1 - 2021-10-14
