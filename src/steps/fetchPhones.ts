@@ -15,10 +15,9 @@ async function fetchPhones(
   const { instance, jobState } = context;
   const client = createDuoClient(instance.config);
 
-  const { response: phones } = await client.fetchPhones();
-
-  for (const phone of phones) {
-    const phoneEntity = await jobState.addEntity(convertPhone(phone));
+  await client.iteratePhones(async (phone) => {
+    const phoneEntity = convertPhone(phone);
+    await jobState.addEntity(phoneEntity);
 
     for (const user of phone.users) {
       await jobState.addRelationship(
@@ -29,7 +28,7 @@ async function fetchPhones(
         }),
       );
     }
-  }
+  });
 }
 
 const step: IntegrationStep<DuoIntegrationConfig> = {

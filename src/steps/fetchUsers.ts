@@ -3,8 +3,6 @@ import {
   IntegrationStepExecutionContext,
   createDirectRelationship,
   RelationshipClass,
-  Relationship,
-  Entity,
 } from '@jupiterone/integration-sdk-core';
 import {
   convertUser,
@@ -42,29 +40,23 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
   }: IntegrationStepExecutionContext<DuoIntegrationConfig>) {
     const client = createDuoClient(instance.config);
 
-    const { response: settings } = await client.fetchAccountSettings();
-    const { response: admins } = await client.fetchAdmins();
-    const { response: groups } = await client.fetchGroups();
-    const { response: users } = await client.fetchUsers();
+    // TODO - Should this step be broken out into separate fetchAccount, fetchUsers
+    // fetchGroups, and fetchAdmins?  Fetching tokens should probably stay with
+    // users.
 
-    const accountEntity = convertAccount(client.siteId, settings);
+    const accountResponse = await client.fetchAccountSettings();
+    const accountEntity = convertAccount(
+      client.siteId,
+      accountResponse.response,
+    );
     await jobState.setData(ACCOUNT_ENTITY, accountEntity);
-    const adminEntities: Entity[] = [];
-    const groupEntities: Entity[] = [];
-    const userEntities: Entity[] = [];
-    const mfaTokenEntities: Entity[] = [];
+    await jobState.addEntity(accountEntity);
 
-    const accountUserRelationships: Relationship[] = [];
-    const accountAdminRelationships: Relationship[] = [];
-    const accountGroupRelationships: Relationship[] = [];
-    const groupUserRelationships: Relationship[] = [];
-    const userMfaRelationships: Relationship[] = [];
-
-    admins.forEach((admin) => {
+    await client.iterateAdmins(async (admin) => {
       const adminEntity = convertAdmin(admin);
-      adminEntities.push(adminEntity);
+      await jobState.addEntity(adminEntity);
 
-      accountAdminRelationships.push(
+      await jobState.addRelationship(
         createDirectRelationship({
           from: accountEntity,
           to: adminEntity,
@@ -73,11 +65,11 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
       );
     });
 
-    groups.forEach((group) => {
+    await client.iterateGroups(async (group) => {
       const groupEntity = convertGroup(group);
-      groupEntities.push(groupEntity);
+      await jobState.addEntity(groupEntity);
 
-      accountGroupRelationships.push(
+      await jobState.addRelationship(
         createDirectRelationship({
           from: accountEntity,
           to: groupEntity,
@@ -86,11 +78,11 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
       );
     });
 
-    users.forEach((user) => {
+    await client.iterateUsers(async (user) => {
       const userEntity = convertUser(user);
-      userEntities.push(userEntity);
+      await jobState.addEntity(userEntity);
 
-      accountUserRelationships.push(
+      await jobState.addRelationship(
         createDirectRelationship({
           from: accountEntity,
           to: userEntity,
@@ -98,70 +90,61 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
         }),
       );
 
-      user.groups &&
-        user.groups.forEach((group) => {
+      if (user.groups) {
+        for (const group of user.groups) {
           const groupEntity = convertGroup(group);
-          groupUserRelationships.push(
+          await jobState.addRelationship(
             createDirectRelationship({
               from: groupEntity,
               to: userEntity,
               _class: RelationshipClass.HAS,
             }),
           );
-        });
+        }
+      }
 
-      user.tokens &&
-        user.tokens.forEach((token) => {
+      if (user.tokens) {
+        for (const token of user.tokens) {
           const tokenEntity = convertToken(token);
-          mfaTokenEntities.push(tokenEntity);
-          userMfaRelationships.push(
+          await jobState.addEntity(tokenEntity);
+          await jobState.addRelationship(
             createDirectRelationship({
               from: userEntity,
               to: tokenEntity,
               _class: RelationshipClass.ASSIGNED,
             }),
           );
-        });
+        }
+      }
 
-      user.u2ftokens &&
-        user.u2ftokens.forEach((token) => {
+      if (user.u2ftokens) {
+        for (const token of user.u2ftokens) {
           const tokenEntity = convertU2fToken(token);
-          mfaTokenEntities.push(tokenEntity);
-          userMfaRelationships.push(
+          await jobState.addEntity(tokenEntity);
+          await jobState.addRelationship(
             createDirectRelationship({
               from: userEntity,
               to: tokenEntity,
               _class: RelationshipClass.ASSIGNED,
             }),
           );
-        });
+        }
+      }
 
-      user.webauthncredentials &&
-        user.webauthncredentials.forEach((token) => {
+      if (user.webauthncredentials) {
+        for (const token of user.webauthncredentials) {
           const tokenEntity = convertWebAuthnToken(token);
-          mfaTokenEntities.push(tokenEntity);
-          userMfaRelationships.push(
+          await jobState.addEntity(tokenEntity);
+          await jobState.addRelationship(
             createDirectRelationship({
               from: userEntity,
               to: tokenEntity,
               _class: RelationshipClass.ASSIGNED,
             }),
           );
-        });
+        }
+      }
     });
-
-    await Promise.all([
-      jobState.addEntities([accountEntity]),
-      jobState.addEntities(adminEntities),
-      jobState.addEntities(groupEntities),
-      jobState.addEntities(userEntities),
-      jobState.addEntities(mfaTokenEntities),
-      jobState.addRelationships(accountAdminRelationships),
-      jobState.addRelationships(accountUserRelationships),
-      jobState.addRelationships(accountGroupRelationships),
-      jobState.addRelationships(groupUserRelationships),
-      jobState.addRelationships(userMfaRelationships),
-    ]);
   },
 };
 

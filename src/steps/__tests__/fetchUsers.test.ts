@@ -1,5 +1,6 @@
 import { createStepContext } from '../../../test';
-import { Recording, setupRecording } from '@jupiterone/integration-sdk-testing';
+import { Recording } from '@jupiterone/integration-sdk-testing';
+import { setupDuoRecording } from '../../../test/setupDuoRecording';
 import step from '../fetchUsers';
 
 let recording: Recording;
@@ -9,7 +10,7 @@ afterEach(async () => {
 });
 
 test('should fetch users in account', async () => {
-  recording = setupRecording({
+  recording = setupDuoRecording({
     name: 'users',
     directory: __dirname,
   });
@@ -18,29 +19,28 @@ test('should fetch users in account', async () => {
   await step.executionHandler(context);
   const entities = context.jobState.collectedEntities;
 
-  expect(entities).toHaveLength(4);
+  expect(entities).toHaveLength(5);
   expect(entities).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
-        email: 'bruce@jupiterone.io',
+        email: 'adam.pierson@jupiterone.com',
         status: 'active',
-        username: 'bruce@jupiterone.io',
+        username: 'adam.pierson@jupiterone.com',
         _type: 'duo_admin',
         _class: ['User'],
-        name: 'Bruce',
-        displayName: 'Bruce',
+        name: 'Adam Pierson',
+        displayName: 'Adam Pierson',
         active: true,
       }),
       expect.objectContaining({
-        _key: 'mfa-device:DH9K9HUHLNXCP2E4Z0O9',
-        _type: 'mfa_device',
-        _class: ['AccessKey'],
-        id: 'DH9K9HUHLNXCP2E4Z0O9',
-        name: 'DH9K9HUHLNXCP2E4Z0O9',
-        displayName: 'DH9K9HUHLNXCP2E4Z0O9',
-        serial: '123abc',
-        type: 'h6',
-        factorType: 'token',
+        email: 'austin.kelleher+duotest@jupiterone.com',
+        status: 'active',
+        username: 'austinkellehertest',
+        _type: 'duo_user',
+        _class: ['User'],
+        name: 'Austin Kelleher Test',
+        displayName: 'Austin Kelleher Test',
+        active: true,
       }),
     ]),
   );

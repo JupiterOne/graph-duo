@@ -28,21 +28,18 @@ async function fetchIntegrations(
     });
   }
 
-  const { response: integrations } = await client.fetchIntegrations();
-
-  for (const integration of integrations) {
-    const integrationEntity = await jobState.addEntity(
-      convertIntegration(integration),
-    );
+  await client.iterateIntegrations(async (integration) => {
+    const integrationEntity = convertIntegration(integration);
+    await jobState.addEntity(integrationEntity);
 
     await jobState.addRelationship(
       createDirectRelationship({
-        _class: RelationshipClass.HAS,
         from: accountEntity,
         to: integrationEntity,
+        _class: RelationshipClass.HAS,
       }),
     );
-  }
+  });
 }
 
 const step: IntegrationStep<DuoIntegrationConfig> = {
