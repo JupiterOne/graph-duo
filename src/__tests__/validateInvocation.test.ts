@@ -3,9 +3,8 @@ import { createStepContext } from '../../test';
 import {
   createMockExecutionContext,
   Recording,
-  setupRecording,
 } from '@jupiterone/integration-sdk-testing';
-
+import { setupDuoRecording } from '../../test/setupDuoRecording';
 import validateInvocation from '../validateInvocation';
 import { DuoIntegrationConfig } from '../types';
 import { IntegrationProviderAuthenticationError } from '@jupiterone/integration-sdk-core';
@@ -28,7 +27,7 @@ describe('validateInvocation API access', () => {
   });
 
   test('rejects if unable to hit provider apis', async () => {
-    recording = setupRecording({
+    recording = setupDuoRecording({
       directory: __dirname,
       name: 'validateInvocationUnauthorized',
       options: {
@@ -45,7 +44,7 @@ describe('validateInvocation API access', () => {
   });
 
   test('resolves when configuration is valid', async () => {
-    recording = setupRecording({
+    recording = setupDuoRecording({
       directory: __dirname,
       name: 'validateInvocation',
     });

@@ -1,5 +1,6 @@
 import { createStepContext } from '../../../test';
-import { Recording, setupRecording } from '@jupiterone/integration-sdk-testing';
+import { Recording } from '@jupiterone/integration-sdk-testing';
+import { setupDuoRecording } from '../../../test/setupDuoRecording';
 import step from '../fetchUsers';
 
 let recording: Recording;
@@ -9,7 +10,7 @@ afterEach(async () => {
 });
 
 test('should fetch users in account', async () => {
-  recording = setupRecording({
+  recording = setupDuoRecording({
     name: 'users',
     directory: __dirname,
   });

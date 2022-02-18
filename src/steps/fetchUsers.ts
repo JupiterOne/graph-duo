@@ -15,7 +15,6 @@ import {
 } from '../converter';
 import { createDuoClient } from '../collector';
 import { DuoIntegrationConfig } from '../types';
-import { DuoAdmin, DuoGroup, DuoUser, Response } from '../collector/types';
 import { Entities, Relationships, ACCOUNT_ENTITY, Steps } from '../constants';
 
 const step: IntegrationStep<DuoIntegrationConfig> = {
@@ -42,10 +41,10 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
     const client = createDuoClient(instance.config);
 
     // TODO - Should this step be broken out into separate fetchAccount, fetchUsers
-    // fetchGroups, and fetchTokens?
+    // fetchGroups, and fetchAdmins?  Fetching tokens should probably stay with
+    // users.
 
-    //Account - No pagination available or needed for this call.
-    const accountResponse = await client.fetchWithRetry('settings');
+    const accountResponse = await client.fetchAccountSettings();
     const accountEntity = convertAccount(
       client.siteId,
       accountResponse.response,
@@ -53,116 +52,99 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
     await jobState.setData(ACCOUNT_ENTITY, accountEntity);
     await jobState.addEntity(accountEntity);
 
-    //Admins
-    await client.fetchWithPagination<Response<DuoAdmin[]>>(
-      'admins',
-      (response) => {
-        const admins = response.response;
-        admins.forEach(async (admin) => {
-          const adminEntity = convertAdmin(admin);
-          await jobState.addEntity(adminEntity);
+    await client.iterateAdmins(async (admin) => {
+      const adminEntity = convertAdmin(admin);
+      await jobState.addEntity(adminEntity);
 
-          await jobState.addRelationship(
-            createDirectRelationship({
-              from: accountEntity,
-              to: adminEntity,
-              _class: RelationshipClass.HAS,
-            }),
-          );
-        });
-      },
-    );
+      await jobState.addRelationship(
+        createDirectRelationship({
+          from: accountEntity,
+          to: adminEntity,
+          _class: RelationshipClass.HAS,
+        }),
+      );
+    });
 
-    //Groups
-    await client.fetchWithPagination<Response<DuoGroup[]>>(
-      'groups',
-      (response) => {
-        const groups = response.response;
-        groups.forEach(async (group) => {
+    await client.iterateGroups(async (group) => {
+      const groupEntity = convertGroup(group);
+      await jobState.addEntity(groupEntity);
+
+      await jobState.addRelationship(
+        createDirectRelationship({
+          from: accountEntity,
+          to: groupEntity,
+          _class: RelationshipClass.HAS,
+        }),
+      );
+    });
+
+    await client.iterateUsers(async (user) => {
+      const userEntity = convertUser(user);
+      await jobState.addEntity(userEntity);
+
+      await jobState.addRelationship(
+        createDirectRelationship({
+          from: accountEntity,
+          to: userEntity,
+          _class: RelationshipClass.HAS,
+        }),
+      );
+
+      if (user.groups) {
+        for (const group of user.groups) {
           const groupEntity = convertGroup(group);
-          await jobState.addEntity(groupEntity);
-
           await jobState.addRelationship(
             createDirectRelationship({
-              from: accountEntity,
-              to: groupEntity,
-              _class: RelationshipClass.HAS,
-            }),
-          );
-        });
-      },
-    );
-
-    //Users
-    await client.fetchWithPagination<Response<DuoUser[]>>(
-      'users',
-      (response) => {
-        const users = response.response;
-        users.forEach(async (user) => {
-          const userEntity = convertUser(user);
-          await jobState.addEntity(userEntity);
-
-          await jobState.addRelationship(
-            createDirectRelationship({
-              from: accountEntity,
+              from: groupEntity,
               to: userEntity,
               _class: RelationshipClass.HAS,
             }),
           );
+        }
+      }
 
-          user.groups &&
-            user.groups.forEach(async (group) => {
-              const groupEntity = convertGroup(group);
-              await jobState.addRelationship(
-                createDirectRelationship({
-                  from: groupEntity,
-                  to: userEntity,
-                  _class: RelationshipClass.HAS,
-                }),
-              );
-            });
+      if (user.tokens) {
+        for (const token of user.tokens) {
+          const tokenEntity = convertToken(token);
+          await jobState.addEntity(tokenEntity);
+          await jobState.addRelationship(
+            createDirectRelationship({
+              from: userEntity,
+              to: tokenEntity,
+              _class: RelationshipClass.ASSIGNED,
+            }),
+          );
+        }
+      }
 
-          user.tokens &&
-            user.tokens.forEach(async (token) => {
-              const tokenEntity = convertToken(token);
-              await jobState.addEntity(tokenEntity);
-              await jobState.addRelationship(
-                createDirectRelationship({
-                  from: userEntity,
-                  to: tokenEntity,
-                  _class: RelationshipClass.ASSIGNED,
-                }),
-              );
-            });
+      if (user.u2ftokens) {
+        for (const token of user.u2ftokens) {
+          const tokenEntity = convertU2fToken(token);
+          await jobState.addEntity(tokenEntity);
+          await jobState.addRelationship(
+            createDirectRelationship({
+              from: userEntity,
+              to: tokenEntity,
+              _class: RelationshipClass.ASSIGNED,
+            }),
+          );
+        }
+      }
 
-          user.u2ftokens &&
-            user.u2ftokens.forEach(async (token) => {
-              const tokenEntity = convertU2fToken(token);
-              await jobState.addEntity(tokenEntity);
-              await jobState.addRelationship(
-                createDirectRelationship({
-                  from: userEntity,
-                  to: tokenEntity,
-                  _class: RelationshipClass.ASSIGNED,
-                }),
-              );
-            });
-
-          user.webauthncredentials &&
-            user.webauthncredentials.forEach(async (token) => {
-              const tokenEntity = convertWebAuthnToken(token);
-              await jobState.addEntity(tokenEntity);
-              await jobState.addRelationship(
-                createDirectRelationship({
-                  from: userEntity,
-                  to: tokenEntity,
-                  _class: RelationshipClass.ASSIGNED,
-                }),
-              );
-            });
-        });
-      },
-    );
+      if (user.webauthncredentials) {
+        for (const token of user.webauthncredentials) {
+          const tokenEntity = convertWebAuthnToken(token);
+          await jobState.addEntity(tokenEntity);
+          await jobState.addRelationship(
+            createDirectRelationship({
+              from: userEntity,
+              to: tokenEntity,
+              _class: RelationshipClass.ASSIGNED,
+            }),
+          );
+        }
+      }
+    });
   },
 };
 

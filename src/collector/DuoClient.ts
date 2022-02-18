@@ -3,7 +3,16 @@ import fetch from 'node-fetch';
 import { IntegrationError } from '@jupiterone/integration-sdk-core';
 
 import buildAuthHeader from './buildAuthHeader';
-import { DuoClientConfiguration } from './types';
+import {
+  DuoAccountSettings,
+  DuoAdmin,
+  DuoClientConfiguration,
+  DuoGroup,
+  DuoIntegration,
+  DuoPhone,
+  DuoUser,
+  Response,
+} from './types';
 
 import * as moment from 'moment';
 
@@ -75,8 +84,7 @@ export default class DuoClient {
       const responseStatus = response.status;
       if (responseStatus === RATE_LIMITED_RESP_CODE) {
         // Rate limit exceeded
-        const retryAfterMs = attemptTimeout * 1000 + 3000;
-        await new Promise((resolve) => setTimeout(resolve, retryAfterMs));
+        await this.sleepBeforeRetry(attemptTimeout);
         return this.fetchWithRetry(
           url,
           attemptTimeout * BACKOFF_FACTOR,
@@ -91,11 +99,16 @@ export default class DuoClient {
     }
   }
 
+  private async sleepBeforeRetry(secondsToSleep: number) {
+    const retryAfterMs = secondsToSleep * 1000;
+    await new Promise((resolve) => setTimeout(resolve, retryAfterMs));
+  }
+
   async fetchWithPagination<T>(
     url: string,
     pageIteratee: ResourceIteratee<T>,
   ): Promise<void> {
-    let offset = 0;
+    let offset: number | undefined = 0;
 
     while (offset != undefined) {
       const pageResponse = await this.fetchWithRetry(
@@ -104,7 +117,80 @@ export default class DuoClient {
         offset,
       );
       await pageIteratee(pageResponse);
-      offset = pageResponse.metadata.next_offset;
+      // Make sure we exit the while loop when missing a
+      // valid response with valid metadata
+      if (!pageResponse || !pageResponse.metadata) {
+        offset = undefined;
+      } else {
+        offset = pageResponse.metadata.next_offset;
+      }
     }
+  }
+
+  // No pagination available (or needed) for this call.
+  async fetchAccountSettings(): Promise<Response<DuoAccountSettings>> {
+    return await this.fetchWithRetry('settings');
+  }
+
+  async iterateAdmins(iteratee: ResourceIteratee<DuoAdmin>): Promise<void> {
+    await this.fetchWithPagination<Response<DuoAdmin[]>>(
+      'admins',
+      async (response) => {
+        const admins = response.response;
+        for (const admin of admins) {
+          await iteratee(admin);
+        }
+      },
+    );
+  }
+
+  async iterateGroups(iteratee: ResourceIteratee<DuoGroup>): Promise<void> {
+    await this.fetchWithPagination<Response<DuoGroup[]>>(
+      'groups',
+      async (response) => {
+        const groups = response.response;
+        for (const group of groups) {
+          await iteratee(group);
+        }
+      },
+    );
+  }
+
+  async iterateIntegrations(
+    iteratee: ResourceIteratee<DuoIntegration>,
+  ): Promise<void> {
+    await this.fetchWithPagination<Response<DuoIntegration[]>>(
+      'integrations',
+      async (response) => {
+        const integrations = response.response;
+        for (const integration of integrations) {
+          await iteratee(integration);
+        }
+      },
+    );
+  }
+
+  async iteratePhones(iteratee: ResourceIteratee<DuoPhone>): Promise<void> {
+    await this.fetchWithPagination<Response<DuoPhone[]>>(
+      'phones',
+      async (response) => {
+        const phones = response.response;
+        for (const phone of phones) {
+          await iteratee(phone);
+        }
+      },
+    );
+  }
+
+  async iterateUsers(iteratee: ResourceIteratee<DuoUser>): Promise<void> {
+    await this.fetchWithPagination<Response<DuoUser[]>>(
+      'users',
+      async (response) => {
+        const users = response.response;
+        for (const user of users) {
+          await iteratee(user);
+        }
+      },
+    );
   }
 }
