@@ -113,7 +113,7 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
       if (user.tokens) {
         for (const token of user.tokens) {
           const tokenEntity = convertToken(token);
-          if (!jobState.findEntity(tokenEntity._key)) {
+          if (!(await jobState.findEntity(tokenEntity._key))) {
             await jobState.addEntity(tokenEntity);
           }
           await jobState.addRelationship(
@@ -129,7 +129,7 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
       if (user.u2ftokens) {
         for (const token of user.u2ftokens) {
           const tokenEntity = convertU2fToken(token);
-          if (!jobState.findEntity(tokenEntity._key)) {
+          if (!(await jobState.findEntity(tokenEntity._key))) {
             await jobState.addEntity(tokenEntity);
           }
           await jobState.addRelationship(
@@ -145,7 +145,7 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
       if (user.webauthncredentials) {
         for (const token of user.webauthncredentials) {
           const tokenEntity = convertWebAuthnToken(token);
-          if (!jobState.findEntity(tokenEntity._key)) {
+          if (!(await jobState.findEntity(tokenEntity._key))) {
             await jobState.addEntity(tokenEntity);
           }
           await jobState.addRelationship(
