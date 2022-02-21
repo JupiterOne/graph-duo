@@ -8,6 +8,15 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 4.1.1 - 2022-02-21
+
+### Fixed
+
+- We now check tokens for existence in the jobState before adding. This avoids a
+  possible duplicate key error in the instance that more than one user is
+  assigned a token (a valid state as documented by Duo here:
+  https://help.duo.com/s/article/3094 )
+
 ## 4.1.0 - 2022-02-18
 
 ### Changed
