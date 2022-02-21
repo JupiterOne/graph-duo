@@ -103,10 +103,19 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
         }
       }
 
+      // NOTE:  According to Duo documentation, it is technically
+      // allowed to have one 2FA device (including hardware tokens)
+      // assigned to multiple users.  We need to check if each of
+      // the below token entities have already been created and
+      // only create the necessary relationship if the entity already
+      // exists in the jobState.
+      // https://help.duo.com/s/article/3094
       if (user.tokens) {
         for (const token of user.tokens) {
           const tokenEntity = convertToken(token);
-          await jobState.addEntity(tokenEntity);
+          if (!(await jobState.findEntity(tokenEntity._key))) {
+            await jobState.addEntity(tokenEntity);
+          }
           await jobState.addRelationship(
             createDirectRelationship({
               from: userEntity,
@@ -120,7 +129,9 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
       if (user.u2ftokens) {
         for (const token of user.u2ftokens) {
           const tokenEntity = convertU2fToken(token);
-          await jobState.addEntity(tokenEntity);
+          if (!(await jobState.findEntity(tokenEntity._key))) {
+            await jobState.addEntity(tokenEntity);
+          }
           await jobState.addRelationship(
             createDirectRelationship({
               from: userEntity,
@@ -134,7 +145,9 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
       if (user.webauthncredentials) {
         for (const token of user.webauthncredentials) {
           const tokenEntity = convertWebAuthnToken(token);
-          await jobState.addEntity(tokenEntity);
+          if (!(await jobState.findEntity(tokenEntity._key))) {
+            await jobState.addEntity(tokenEntity);
+          }
           await jobState.addRelationship(
             createDirectRelationship({
               from: userEntity,
