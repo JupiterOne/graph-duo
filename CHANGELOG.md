@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 4.1.2 - 2022-02-22
+
+### Fixed
+
+- We're now checking all user->token relationships for duplication before
+  creation to avoid an additional duplicate key error.
+
 ## 4.1.1 - 2022-02-21
 
 ### Fixed
