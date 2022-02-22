@@ -3,6 +3,8 @@ import {
   IntegrationStepExecutionContext,
   createDirectRelationship,
   RelationshipClass,
+  JobState,
+  Entity,
 } from '@jupiterone/integration-sdk-core';
 import {
   convertUser,
@@ -16,6 +18,36 @@ import {
 import { createDuoClient } from '../collector';
 import { DuoIntegrationConfig } from '../types';
 import { Entities, Relationships, ACCOUNT_ENTITY, Steps } from '../constants';
+
+// According to Duo documentation, it is technically allowed to have one
+// 2FA device (including hardware tokens) assigned to multiple users.
+// We need to check if each of the below token entities have already been
+// created and only create the necessary relationship if the entity already
+// exists in the jobState.  https://help.duo.com/s/article/3094
+async function checkAndAddTokenAndRelationship(
+  jobState: JobState,
+  userEntity: Entity,
+  tokenEntity: Entity,
+): Promise<void> {
+  if (!(await jobState.findEntity(tokenEntity._key))) {
+    await jobState.addEntity(tokenEntity);
+  }
+  if (
+    !(await jobState.hasKey(
+      `${userEntity._key}|${RelationshipClass.ASSIGNED.toLowerCase()}|${
+        tokenEntity._key
+      }`,
+    ))
+  ) {
+    await jobState.addRelationship(
+      createDirectRelationship({
+        from: userEntity,
+        to: tokenEntity,
+        _class: RelationshipClass.ASSIGNED,
+      }),
+    );
+  }
+}
 
 const step: IntegrationStep<DuoIntegrationConfig> = {
   id: Steps.FETCH_USERS,
@@ -103,25 +135,13 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
         }
       }
 
-      // NOTE:  According to Duo documentation, it is technically
-      // allowed to have one 2FA device (including hardware tokens)
-      // assigned to multiple users.  We need to check if each of
-      // the below token entities have already been created and
-      // only create the necessary relationship if the entity already
-      // exists in the jobState.
-      // https://help.duo.com/s/article/3094
       if (user.tokens) {
         for (const token of user.tokens) {
           const tokenEntity = convertToken(token);
-          if (!(await jobState.findEntity(tokenEntity._key))) {
-            await jobState.addEntity(tokenEntity);
-          }
-          await jobState.addRelationship(
-            createDirectRelationship({
-              from: userEntity,
-              to: tokenEntity,
-              _class: RelationshipClass.ASSIGNED,
-            }),
+          await checkAndAddTokenAndRelationship(
+            jobState,
+            userEntity,
+            tokenEntity,
           );
         }
       }
@@ -129,15 +149,10 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
       if (user.u2ftokens) {
         for (const token of user.u2ftokens) {
           const tokenEntity = convertU2fToken(token);
-          if (!(await jobState.findEntity(tokenEntity._key))) {
-            await jobState.addEntity(tokenEntity);
-          }
-          await jobState.addRelationship(
-            createDirectRelationship({
-              from: userEntity,
-              to: tokenEntity,
-              _class: RelationshipClass.ASSIGNED,
-            }),
+          await checkAndAddTokenAndRelationship(
+            jobState,
+            userEntity,
+            tokenEntity,
           );
         }
       }
@@ -145,15 +160,10 @@ const step: IntegrationStep<DuoIntegrationConfig> = {
       if (user.webauthncredentials) {
         for (const token of user.webauthncredentials) {
           const tokenEntity = convertWebAuthnToken(token);
-          if (!(await jobState.findEntity(tokenEntity._key))) {
-            await jobState.addEntity(tokenEntity);
-          }
-          await jobState.addRelationship(
-            createDirectRelationship({
-              from: userEntity,
-              to: tokenEntity,
-              _class: RelationshipClass.ASSIGNED,
-            }),
+          await checkAndAddTokenAndRelationship(
+            jobState,
+            userEntity,
+            tokenEntity,
           );
         }
       }
