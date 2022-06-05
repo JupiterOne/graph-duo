@@ -3,7 +3,7 @@ sourceId: managed:duo
 integrationDefinitionId: "${integration_definition_id}"
 questions: 
 - id: integration-question-duo-accounts-with-no-complex-password-requirements
-  title: Which Duo accounts have no complex password requirements?
+  title: Which Duo accounts are without a complex set of password requirements?
   description:
     Returns Duo accounts that do not have a complex set of password requirements.
   queries: 
