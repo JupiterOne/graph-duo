@@ -9,9 +9,12 @@ questions:
   queries: 
   - name: bad 
     query: |
-      FIND duo_account AS acct 
-      RETURN
-      acct.displayName,acct.passwordRequiresLowerAlpha,acct.passwordRequiresNumeric,
-      acct.passwordRequiresSpecial,acct.passwordRequiresUpperAlpha 
+      FIND duo_account WITH passwordRequiresLowerAlpha != true 
+        AND 
+        passwordRequiresNumeric != true 
+        AND 
+        passwordRequiresSpecial != true 
+        AND 
+        passwordRequiresUpperAlpha != true
   tags:
   - duo
