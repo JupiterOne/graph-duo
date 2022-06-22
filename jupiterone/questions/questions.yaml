@@ -7,7 +7,7 @@ questions:
   description:
     Returns Duo accounts that do not have any password requirements.
   queries: 
-  - name: bad 
+  - name: BAD 
     query: |
       FIND duo_account WITH passwordRequiresLowerAlpha != true 
         AND 
