@@ -1,4 +1,20 @@
 ---
 sourceId: managed:duo
 integrationDefinitionId: "${integration_definition_id}"
-questions: []
+questions: 
+- id: integration-question-duo-accounts-with-no-password-requirements
+  title: Which Duo accounts are without password requirements?
+  description:
+    Returns Duo accounts that do not have any password requirements.
+  queries: 
+  - name: BAD 
+    query: |
+      FIND duo_account WITH passwordRequiresLowerAlpha != true 
+        AND 
+        passwordRequiresNumeric != true 
+        AND 
+        passwordRequiresSpecial != true 
+        AND 
+        passwordRequiresUpperAlpha != true
+  tags:
+  - duo
