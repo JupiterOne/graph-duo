@@ -1,4 +1,4 @@
-# Integration with JupiterOne
+# Duo
 
 ## Duo + JupiterOne Integration Benefits
 
@@ -46,7 +46,7 @@ JupiterOne requires at a minimum the following API permissions be enabled:
 
 ### In JupiterOne
 
-1. From the configuration **Gear Icon**, select **Integrations**.
+1. From the top navigation of the J1 Search homepage, select **Integrations**.
 2. Scroll to the **Duo** integration tile and click it.
 3. Click the **Add Configuration** button and configure the following settings:
 
@@ -65,7 +65,7 @@ JupiterOne requires at a minimum the following API permissions be enabled:
 
 ## How to Uninstall
 
-1. From the configuration **Gear Icon**, select **Integrations**.
+1. From the top navigation of the J1 Search homepage, select **Integrations**.
 2. Scroll to the **Duo** integration tile and click it.
 3. Identify and click the **integration to delete**.
 4. Click the **trash can** icon.
