@@ -8,6 +8,16 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 4.2.0 - 2022-06-20
+
+### Added
+
+- `lastSeenOn`, `tampered`, and `activated` to Device entities.
+
+### Changed
+
+- `serial` from "UNKNOWN" to null.
+
 ## 4.1.2 - 2022-02-22
 
 ### Fixed
