@@ -42,6 +42,11 @@ test('step - fetch phones', async () => {
         activated: { type: 'boolean' },
         tampered: { type: 'string' },
         lastSeenOn: { type: 'number' },
+        username: { type: 'string' },
+        email: { type: 'string' },
+        userId: { type: 'string' },
+        phoneNumber: { type: 'string' },
+        deviceId: { type: 'string' },
       },
     },
   });
