@@ -8,6 +8,18 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 4.2.1 - 2022-07-24
+
+### Added
+
+- `username`, `email`, `userId`, `phoneNumber`, and `deviceId` to Device
+  entities.
+
+### Changed
+
+- `name` and `displayName` do default to a constructed string if a name property
+  is not provided.
+
 ## 4.2.0 - 2022-06-20
 
 ### Added

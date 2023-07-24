@@ -8,8 +8,9 @@ import fetchPhones from './steps/fetchPhones';
 import fetchIntegrations from './steps/fetchIntegrations';
 import { DuoIntegrationConfig } from './types';
 
-export const invocationConfig: IntegrationInvocationConfig<DuoIntegrationConfig> = {
-  instanceConfigFields,
-  validateInvocation,
-  integrationSteps: [fetchUsers, fetchPhones, fetchIntegrations],
-};
+export const invocationConfig: IntegrationInvocationConfig<DuoIntegrationConfig> =
+  {
+    instanceConfigFields,
+    validateInvocation,
+    integrationSteps: [fetchUsers, fetchPhones, fetchIntegrations],
+  };
