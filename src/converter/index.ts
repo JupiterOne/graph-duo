@@ -200,10 +200,11 @@ export function convertPhone(
 ): ReturnType<typeof createIntegrationEntity> {
   const name = toUndefinedWhenNull(phone.name);
 
+  const firstUser = Array.isArray(phone.users) ? phone.users[0] : undefined;
   const deviceUsersName: string =
-    phone.users[0]?.firstname && phone.users[0]?.lastname
-      ? `${phone.users[0]?.firstname} ${phone.users[0]?.lastname}`
-      : phone.users[0]?.email || phone.users[0]?.username || 'Unknown User';
+    firstUser?.firstname && firstUser?.lastname
+      ? `${firstUser.firstname} ${firstUser.lastname}`
+      : firstUser?.email || firstUser?.username || 'Unknown User';
 
   return createIntegrationEntity({
     entityData: {
@@ -224,9 +225,9 @@ export function convertPhone(
         tampered: phone.tampered,
         serial: null,
         lastSeenOn: parseTimePropertyValue(phone.last_seen),
-        username: phone.users[0]?.username,
-        email: phone.users[0]?.email,
-        userId: phone.users[0]?.user_id,
+        username: firstUser?.username,
+        email: firstUser?.email,
+        userId: firstUser?.user_id,
         phoneNumber: phone.number,
         deviceId: phone.phone_id,
       },
