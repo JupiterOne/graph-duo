@@ -34,7 +34,15 @@ If you need help with this integration, please contact
 
 You will need to create an API key (`Integration Key` + `Secret Key`) from your
 Duo Admin Panel. You may need to contact Duo Support to request API access. See
-up-to-date instructions in [Duo Support Docs][1].
+up-to-date instructions in [Duo Support Docs][1]. 
+
+To get started sign into the DUO Admin console and perform the following actions:
+
+1. Select **Applications** from the left-side menu.
+2. Click the blue **Protect an Application** button.
+3. In the search bar type "Admin API".
+4. Once the **Admin API** app has been located click the **Protect** button.
+5. Proceed to the permission section below and assign those to your Admin API app.
 
 #### Required API Permissions
 
